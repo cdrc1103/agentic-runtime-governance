@@ -1,5 +1,6 @@
 AUD-01:
 - tests/core/test_audit.py::test_every_outcome_and_rejection_is_recorded_with_required_fields
+- tests/service/test_api.py::test_decision_roundtrip_and_malformed_bodies_are_decided_not_crashed
 - tests/service/test_decision_service.py::test_s01_auto_execute_is_audited_and_reserved[memory]
 - tests/service/test_decision_service.py::test_s01_auto_execute_is_audited_and_reserved[sqlite]
 - tests/service/test_decision_service.py::test_s04_expired_mandate_denied_at_mandate_stage[memory]
@@ -36,6 +37,7 @@ AUD-06:
 - tests/core/test_audit.py::test_sqlite_modified_row_detected
 - tests/core/test_audit.py::test_sqlite_reordered_rows_detected
 - tests/core/test_audit.py::test_truncated_tail_needs_anchor
+- tests/service/test_api.py::test_audit_verify_and_anchor_endpoints
 CTL-01:
 - tests/core/test_controls.py::test_repository_selects_by_action_class_and_validity
 - tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
@@ -142,18 +144,23 @@ ENV-06:
 - tests/service/test_decision_service.py::test_s23_duplicate_envelope_returns_original_without_second_reservation[memory]
 - tests/service/test_decision_service.py::test_s23_duplicate_envelope_returns_original_without_second_reservation[sqlite]
 ESC-01:
+- tests/service/test_api.py::test_escalation_flow_over_http
 - tests/service/test_decision_service.py::test_s02_escalation_holds_action[memory]
 - tests/service/test_decision_service.py::test_s02_escalation_holds_action[sqlite]
 ESC-02:
 - tests/service/test_escalation.py::test_s15_open_escalation_cap_blocks_new_ones
 ESC-03:
+- tests/service/test_api.py::test_sweep_endpoint_applies_timeouts
 - tests/service/test_escalation.py::test_s06_timeout_blocks_and_is_logged
 - tests/service/test_escalation.py::test_timeout_default_senior_reassigns_once_then_blocks
 ESC-04:
+- tests/service/test_api.py::test_escalation_flow_over_http
 - tests/service/test_escalation.py::test_authorised_reviewer_approval_carries_weight
 - tests/service/test_escalation.py::test_modify_beyond_reviewer_authority_refused
 - tests/service/test_escalation.py::test_s07_reviewer_without_authority_refused_and_logged
 ESC-05:
+- tests/service/test_api.py::test_escalation_flow_over_http
+- tests/service/test_api.py::test_modify_over_http_returns_child_decision
 - tests/service/test_escalation.py::test_modify_beyond_reviewer_authority_refused
 - tests/service/test_escalation.py::test_s24_modify_reenters_pipeline_with_parent_link
 ESC-06:
@@ -193,6 +200,7 @@ INT-04:
 - tests/contracts/test_state_store_contract.py::test_token_consumed_once[memory]
 - tests/contracts/test_state_store_contract.py::test_token_consumed_once[sqlite]
 INT-05:
+- tests/service/test_api.py::test_decision_roundtrip_and_malformed_bodies_are_decided_not_crashed
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[memory]
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[sqlite]
 - tests/service/test_decision_service.py::test_s16_internal_error_fails_closed_and_is_audited[memory]

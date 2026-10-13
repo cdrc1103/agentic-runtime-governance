@@ -13,8 +13,10 @@ human escalation, and two integration patterns (native, gateway).
 
 ## Status
 
-Phase 0 (bootstrap): spec docs, abstract extension points, registry/factory/composition
-root, traceability tooling. Implementations arrive phase by phase; see `docs/plan/phases.md`.
+Phases 0-6 done: spec docs and ADRs, envelope/identity/controls/mandates, disposition engine
+(with optional Rego), audit log, state store, decision service, escalation, HTTP API with
+bearer auth and OpenTelemetry. Pending: decision tokens, native/gateway adapters, conformance
+suite, packaging; see `docs/plan/phases.md`. Try `uv run python demo/engine_demo.py`.
 
 ## Layout
 
@@ -31,11 +33,13 @@ root, traceability tooling. Implementations arrive phase by phase; see `docs/pla
 ## Develop
 
 ```bash
-uv sync
+uv sync --all-extras
 uv run ruff check . && uv run ruff format --check .
 uv run mypy
 uv run pytest --req-report
 uv run python scripts/check_traceability.py   # add --strict once all [PAPER] IDs have tests
+ARG_CONFIG=config/runtime.yaml ARG_TOKENS='{"t":{"principal":"ops","roles":["admin"]}}' \
+  uv run uvicorn arg.service.main:create_app_from_env --factory   # decision API
 ```
 
 ## Licence

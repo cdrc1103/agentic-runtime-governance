@@ -17,6 +17,7 @@ from arg.core.audit.builder import (
     content_from_disposition,
     content_from_rejection,
 )
+from arg.core.decision.observer import DecisionObserver, NullObserver
 from arg.core.models import (
     AuditConflict,
     AuditContent,
@@ -66,6 +67,7 @@ class DecisionService:
         controls_repository: ControlsRepository,
         clock: Callable[[], datetime] = system_clock,
         amount_parameter: str = "amount",
+        observer: DecisionObserver | None = None,
     ) -> None:
         """Inject the ordered stages and stores (wired by the composition root)."""
         self.stages = list(stages)
@@ -75,6 +77,7 @@ class DecisionService:
         self.repo = controls_repository
         self.clock = clock
         self.amount_parameter = amount_parameter
+        self.observer: DecisionObserver = observer or NullObserver()
 
     # ---- decide ---------------------------------------------------------------------
     def decide(
@@ -85,6 +88,17 @@ class DecisionService:
         internal_identity: IdentityBinding | None = None,
     ) -> DecisionResponse:
         """Decide one proposed action. ``internal_identity`` is for reviewer re-entry only."""
+        with self.observer.decision():
+            response = self._decide(raw, claimed_agent_id, internal_identity)
+        self.observer.decided(response)
+        return response
+
+    def _decide(
+        self,
+        raw: Mapping[str, Any],
+        claimed_agent_id: str | None,
+        internal_identity: IdentityBinding | None,
+    ) -> DecisionResponse:
         envelope_id = raw.get("envelope_id") if isinstance(raw, Mapping) else None
         now = self.clock()
         try:
@@ -113,9 +127,10 @@ class DecisionService:
         timings: dict[str, float] = {}
         try:
             for stage in self.stages:
-                t0 = time.perf_counter()
-                state = stage.run(state)
                 name = type(stage).__name__.removesuffix("Stage").lower()
+                t0 = time.perf_counter()
+                with self.observer.stage(name):
+                    state = stage.run(state)
                 timings[name] = round((time.perf_counter() - t0) * 1000, 3)
         except (IdentityRejection, MandateRejection, StageRejection) as exc:
             stage_name = (
@@ -147,6 +162,8 @@ class DecisionService:
                     reservations=state["specs"],
                 )
             if record is None:
+                if route is not None:
+                    self.observer.escalation_blocked(route.queue)
                 code = "ESC_NO_ROUTE" if route is None else "ESC_QUEUE_FULL"
                 disposition = replace(
                     disposition,
@@ -158,6 +175,7 @@ class DecisionService:
                 )
             else:
                 escalation_id = record.escalation_id
+                self.observer.queue_depth(record.queue, self.queue.depth(record.queue))
         content = content_from_disposition(
             env,
             identity,
@@ -322,6 +340,7 @@ class DecisionService:
                 policy_version=self.repo.policy_version,
             )
         )
+        self.observer.queue_depth(record.queue, self.queue.depth(record.queue))
         child: DecisionResponse | None = None
         if action == "modify":
             child = self._reenter(record, reviewer_id, dict(modified_parameters or {}), now)
@@ -347,6 +366,8 @@ class DecisionService:
         """Apply timeout defaults and audit each change (ESC-03)."""
         now = self.clock()
         changed = self.queue.sweep(now)
+        for queue_name in {r.queue for r in changed}:
+            self.observer.queue_depth(queue_name, self.queue.depth(queue_name))
         for record in changed:
             timed_out = record.state is EscalationState.TIMED_OUT
             self._append(

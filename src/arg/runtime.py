@@ -33,6 +33,7 @@ from arg.core.ports import (
     TokenService,
 )
 from arg.core.registry import ComponentRegistry, registry_for
+from arg.service.auth import Authenticator
 
 # Role name in runtime.yaml -> abstract class. Order = construction order, so a component
 # may depend on any role listed before it (e.g. identity_verifier takes agent_registry).
@@ -49,6 +50,7 @@ ROLES: dict[str, type] = {
     "resolution_policy": ResolutionPolicy,
     "token_service": TokenService,
     "escalation_queue": EscalationQueue,
+    "authenticator": Authenticator,
 }
 
 

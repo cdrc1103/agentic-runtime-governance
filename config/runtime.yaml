@@ -1,15 +1,29 @@
-# Sample composition. Implementations arrive phase by phase (docs/plan/phases.md);
-# until then this file lists the intended wiring and `build_runtime` rejects unknown types.
+# Sample composition of the reference runtime (Example Bank, fictional).
+# `ARG_TOKENS` must hold JSON like {"<token>": {"principal": "rita.reviewer", "roles": ["review"]}}.
 components:
-  state_store: {type: memory}            # Phase 6
-  audit_store: {type: memory}            # Phase 5
+  state_store: {type: memory}
+  audit_store: {type: memory}
   anchor_sink: {type: file, path: var/anchors.jsonl}
-  agent_registry: {type: file, path: config/agents.yaml}   # Phase 2
+  agent_registry: {type: file, path: config/agents.yaml}
+  envelope_authenticator: {type: by-origin, trusted_gateways: []}
   identity_verifier: {type: default}
-  controls_repository: {type: bundle, path: config/bundle}  # Phase 3
-  resolution_policy: {type: precedence}  # Phase 4
-  token_service: {type: ed25519}         # Phase 7
+  controls_repository: {type: bundle, path: config/bundle}   # production mode: approved only
+  mandate_resolver: {type: file, path: config/mandates.yaml, max_depth: 1}
+  risk_calibrator: {type: config, path: config/bundle/calibration.yaml}
+  resolution_policy: {type: precedence}
+  escalation_queue: {type: state, reviewers_path: config/reviewers.yaml, max_open: 100}
+  authenticator: {type: bearer, tokens_env: ARG_TOKENS}
 evaluators:
   authorisation: {type: authorisation}
   exposure: {type: exposure}
-pipeline: [validate, identity, retrieve, evaluate, reserve, audit]
+  rate: {type: rate}
+  evidence: {type: evidence}
+pipeline:
+  - type: validate
+    requirements:
+      payment.initiate: {required_parameters: [amount, currency], trace_required: true}
+  - identity
+  - mandate
+  - retrieve
+  - evaluate
+  - reserve
