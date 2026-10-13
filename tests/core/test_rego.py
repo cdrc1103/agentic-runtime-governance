@@ -32,12 +32,13 @@ AUTH = {"permitted_action_types": ["payment.initiate"], "max_delegation_depth": 
 @pytest.mark.parametrize("amount", [1, 10000, 10000.5, 250000, "lots"])
 def test_exposure_parity(amount: Any) -> None:
     """Built-in and Rego exposure controls give the same finding for each scenario."""
+    esc = {"queue": "q", "timeout_seconds": 60, "reviewer_role": "r"}
     builtin = ctl(
         "e",
         "exposure",
         {"type": "exposure", **EXPOSURE},
         effect="escalate",
-        escalation={"queue": "q", "timeout_seconds": 60, "reviewer_role": "r"},
+        escalation=esc,
     )
     rego = ctl(
         "e",
@@ -49,8 +50,8 @@ def test_exposure_parity(amount: Any) -> None:
             **EXPOSURE,
         },
         effect="escalate",
-        escalation=builtin.escalation.model_dump(),
-    )  # type: ignore[union-attr]
+        escalation=esc,
+    )
     c = ctx(amount)
     assert view(ExposureEvaluator(), builtin, c) == view(REGO, rego, c)
 
