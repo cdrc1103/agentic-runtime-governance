@@ -1,5 +1,6 @@
 """Rego evaluator: parity with built-in evaluators (needs ``opa`` on PATH; skipped otherwise)."""
 
+import os
 import shutil
 from pathlib import Path
 from typing import Any
@@ -14,7 +15,10 @@ from tests.core.test_engine import ID, MANDATE, ctl, ctx
 
 pytestmark = [
     pytest.mark.rego,
-    pytest.mark.skipif(shutil.which("opa") is None, reason="opa binary not installed"),
+    pytest.mark.skipif(
+        shutil.which("opa") is None and not os.environ.get("ARG_REQUIRE_OPA"),
+        reason="opa binary not installed",
+    ),
 ]
 ROOT = Path("config/bundle")
 REGO = RegoControlEvaluator(ROOT)
