@@ -1,0 +1,10 @@
+# Fictional Example Bank control. `logic` shapes are finalised with the evaluators (Phase 4).
+control_id: auth-treasury-payments
+version: 1
+source: policy
+category: authorisation
+applies_to: {action_types: [payment.initiate], agent_classes: [treasury]}
+logic: {type: authorisation, permitted_action_types: [payment.initiate], max_delegation_depth: 1}
+effect: deny
+owner: risk-and-compliance
+review_status: approved

@@ -1,0 +1,10 @@
+control_id: exposure-payment-per-action
+version: 1
+source: policy
+category: exposure
+applies_to: {action_types: [payment.initiate]}
+logic: {type: exposure, scope: per_action, amount_parameter: amount, limit: 10000}
+effect: escalate
+escalation: {queue: treasury-review, timeout_seconds: 900, reviewer_role: treasury-reviewer, on_timeout: block}
+owner: risk-and-compliance
+review_status: approved

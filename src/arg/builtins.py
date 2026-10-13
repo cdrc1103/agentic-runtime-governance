@@ -3,4 +3,5 @@
 Only the composition root (``arg.runtime``) and test scaffolding import this module.
 """
 
+import arg.core.controls  # noqa: F401
 import arg.core.identity  # noqa: F401

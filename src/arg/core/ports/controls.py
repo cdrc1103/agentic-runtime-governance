@@ -2,8 +2,16 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
+from datetime import datetime
 
-from arg.core.types import JsonObject
+from arg.core.models import (
+    Action,
+    Control,
+    EvaluationContext,
+    Finding,
+    IdentityBinding,
+    Mandate,
+)
 
 
 class ControlsRepository(ABC):
@@ -12,9 +20,16 @@ class ControlsRepository(ABC):
     Requirements: CTL-01, CTL-07.
     """
 
+    @property
     @abstractmethod
-    def retrieve(self, identity: JsonObject, action: JsonObject) -> Sequence[JsonObject]:
-        """Return applicable controls, selected by action type, agent class, and source."""
+    def policy_version(self) -> str:
+        """Hash of the loaded bundle; recorded in every audit entry (T6)."""
+
+    @abstractmethod
+    def retrieve(
+        self, identity: IdentityBinding, action: Action, at: datetime
+    ) -> Sequence[Control]:
+        """Return controls valid at ``at``, selected by action type and agent class."""
 
 
 class MandateResolver(ABC):
@@ -24,8 +39,8 @@ class MandateResolver(ABC):
     """
 
     @abstractmethod
-    def resolve(self, mandate_ref: str, agent_id: str) -> JsonObject:
-        """Return the validated mandate or raise a reason-coded failure."""
+    def resolve(self, mandate_ref: str, agent_id: str, at: datetime) -> Mandate:
+        """Return the validated mandate or raise ``MandateRejection``."""
 
 
 class ControlEvaluator(ABC):
@@ -35,5 +50,5 @@ class ControlEvaluator(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, control: JsonObject, context: JsonObject) -> Sequence[JsonObject]:
-        """Return findings (control id, version, result, inputs) for ``control``."""
+    def evaluate(self, control: Control, context: EvaluationContext) -> Sequence[Finding]:
+        """Return findings for ``control``; a pure function of its arguments."""

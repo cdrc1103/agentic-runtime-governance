@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "JsonValue": {},
+    "MandateLimits": {
+      "additionalProperties": false,
+      "description": "Limits delegated by the principal; omitted means \"none granted\".",
+      "properties": {
+        "aggregate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Aggregate"
+        },
+        "per_action": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Per Action"
+        },
+        "rate": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rate"
+        }
+      },
+      "title": "MandateLimits",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Machine-readable delegation of authority from a principal to an agent (CTL-03).",
+  "properties": {
+    "agent_id": {
+      "minLength": 1,
+      "title": "Agent Id",
+      "type": "string"
+    },
+    "conditions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Conditions",
+      "type": "object"
+    },
+    "delegation_chain": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Delegation Chain",
+      "type": "array"
+    },
+    "depth": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Depth",
+      "type": "integer"
+    },
+    "limits": {
+      "$ref": "#/$defs/MandateLimits"
+    },
+    "mandate_id": {
+      "minLength": 1,
+      "title": "Mandate Id",
+      "type": "string"
+    },
+    "not_after": {
+      "format": "date-time",
+      "title": "Not After",
+      "type": "string"
+    },
+    "not_before": {
+      "format": "date-time",
+      "title": "Not Before",
+      "type": "string"
+    },
+    "permitted_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Permitted Actions",
+      "type": "array"
+    },
+    "principal": {
+      "minLength": 1,
+      "title": "Principal",
+      "type": "string"
+    },
+    "revocation_ref": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revocation Ref"
+    },
+    "signature": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Signature"
+    }
+  },
+  "required": [
+    "mandate_id",
+    "principal",
+    "agent_id",
+    "permitted_actions",
+    "not_before",
+    "not_after"
+  ],
+  "title": "Mandate",
+  "type": "object"
+}

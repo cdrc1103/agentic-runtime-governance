@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "AppliesTo": {
+      "additionalProperties": false,
+      "description": "Selection scope; an empty list means \"any\".",
+      "properties": {
+        "action_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Action Types",
+          "type": "array"
+        },
+        "agent_classes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Agent Classes",
+          "type": "array"
+        }
+      },
+      "title": "AppliesTo",
+      "type": "object"
+    },
+    "ControlCategory": {
+      "description": "Independently configurable categories (CTL-05).",
+      "enum": [
+        "authorisation",
+        "exposure",
+        "rate",
+        "evidence",
+        "custom"
+      ],
+      "title": "ControlCategory",
+      "type": "string"
+    },
+    "ControlKind": {
+      "description": "Generic (any actor) or AI-specific (CTL-02).",
+      "enum": [
+        "generic",
+        "ai_specific"
+      ],
+      "title": "ControlKind",
+      "type": "string"
+    },
+    "ControlSource": {
+      "description": "Where a control's authority comes from (CTL-01).",
+      "enum": [
+        "regulatory",
+        "policy",
+        "product",
+        "mandate"
+      ],
+      "title": "ControlSource",
+      "type": "string"
+    },
+    "Effect": {
+      "description": "What a fired control asks for; resolution precedence is DSP-06.",
+      "enum": [
+        "deny",
+        "escalate",
+        "observe"
+      ],
+      "title": "Effect",
+      "type": "string"
+    },
+    "Escalation": {
+      "additionalProperties": false,
+      "description": "Escalation routing and timeout default (CTL-04, ESC-03).",
+      "properties": {
+        "on_timeout": {
+          "default": "block",
+          "enum": [
+            "block",
+            "senior"
+          ],
+          "title": "On Timeout",
+          "type": "string"
+        },
+        "queue": {
+          "title": "Queue",
+          "type": "string"
+        },
+        "reviewer_role": {
+          "title": "Reviewer Role",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "queue",
+        "timeout_seconds",
+        "reviewer_role"
+      ],
+      "title": "Escalation",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "ReviewStatus": {
+      "description": "Review state; production loads only ``approved`` (CTL-07).",
+      "enum": [
+        "draft",
+        "approved"
+      ],
+      "title": "ReviewStatus",
+      "type": "string"
+    },
+    "Validity": {
+      "additionalProperties": false,
+      "description": "Validity period (CTL-04); bounds are inclusive, open when omitted.",
+      "properties": {
+        "not_after": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Not After"
+        },
+        "not_before": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Not Before"
+        }
+      },
+      "title": "Validity",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One rule of the institution's rulebook (CTL-04).",
+  "properties": {
+    "applies_to": {
+      "$ref": "#/$defs/AppliesTo"
+    },
+    "category": {
+      "$ref": "#/$defs/ControlCategory"
+    },
+    "control_id": {
+      "minLength": 1,
+      "title": "Control Id",
+      "type": "string"
+    },
+    "effect": {
+      "$ref": "#/$defs/Effect"
+    },
+    "escalation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Escalation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "kind": {
+      "$ref": "#/$defs/ControlKind",
+      "default": "generic"
+    },
+    "logic": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Logic",
+      "type": "object"
+    },
+    "owner": {
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "review_status": {
+      "$ref": "#/$defs/ReviewStatus",
+      "default": "draft"
+    },
+    "source": {
+      "$ref": "#/$defs/ControlSource"
+    },
+    "validity": {
+      "$ref": "#/$defs/Validity"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "control_id",
+    "version",
+    "source",
+    "category",
+    "logic",
+    "effect",
+    "owner"
+  ],
+  "title": "Control",
+  "type": "object"
+}

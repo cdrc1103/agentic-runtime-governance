@@ -1,3 +1,28 @@
+CTL-01:
+- tests/core/test_controls.py::test_repository_selects_by_action_class_and_validity
+- tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
+CTL-02:
+- tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
+CTL-03:
+- tests/core/test_controls.py::test_agent_cannot_widen_a_mandate
+- tests/core/test_controls.py::test_mandate_rejections
+- tests/core/test_controls.py::test_valid_mandate_resolves
+CTL-04:
+- tests/core/test_controls.py::test_control_model_requires_logic_type_and_escalation_block
+- tests/core/test_controls.py::test_mandate_rejections
+- tests/core/test_controls.py::test_repository_selects_by_action_class_and_validity
+- tests/core/test_controls.py::test_valid_mandate_resolves
+CTL-05:
+- tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
+CTL-06:
+- tests/core/test_controls.py::test_every_control_names_an_owner
+CTL-07:
+- tests/core/test_controls.py::test_manifest_hash_changes_with_any_file_and_is_stable
+- tests/core/test_controls.py::test_production_mode_refuses_unapproved_controls
+DSP-01:
+- tests/core/test_controls.py::test_dispatch_by_logic_type_and_fail_closed
+DSP-04:
+- tests/core/test_controls.py::test_production_mode_refuses_unapproved_controls
 ENV-02:
 - tests/core/test_envelope_models.py::test_envelope_carries_action_trace_and_context
 ENV-03:

@@ -16,7 +16,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 
 from arg.core.canonical import canonical_bytes
-from arg.core.models import Envelope
+from arg.core.models import Envelope, Mandate
 
 
 def generate_private_key() -> Ed25519PrivateKey:
@@ -106,3 +106,20 @@ def verify_envelope_signature(envelope: Envelope, key: Ed25519PublicKey) -> bool
     """Return True iff the envelope carries a valid signature from ``key`` (ENV-04)."""
     sig = envelope.provenance.signature
     return sig is not None and verify(key, signing_payload(envelope), sig)
+
+
+def mandate_signing_payload(mandate: Mandate) -> bytes:
+    """Canonical bytes of the mandate with ``signature`` cleared (principal signs this)."""
+    return canonical_bytes(mandate.model_copy(update={"signature": None}))
+
+
+def sign_mandate(mandate: Mandate, key: Ed25519PrivateKey) -> Mandate:
+    """Return a copy of ``mandate`` signed with the principal's key."""
+    return mandate.model_copy(update={"signature": sign(key, mandate_signing_payload(mandate))})
+
+
+def verify_mandate_signature(mandate: Mandate, key: Ed25519PublicKey) -> bool:
+    """Return True iff the mandate carries a valid signature from ``key``."""
+    return mandate.signature is not None and verify(
+        key, mandate_signing_payload(mandate), mandate.signature
+    )

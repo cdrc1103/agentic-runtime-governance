@@ -1,5 +1,20 @@
 """Pydantic data contracts (``docs/spec/contracts.md``)."""
 
+from arg.core.models.controls import (
+    AppliesTo,
+    Control,
+    ControlCategory,
+    ControlKind,
+    ControlsLoadError,
+    ControlSource,
+    Effect,
+    Escalation,
+    Mandate,
+    MandateLimits,
+    MandateRejection,
+    ReviewStatus,
+    Validity,
+)
 from arg.core.models.envelope import (
     SCHEMA_VERSION,
     Action,
@@ -10,6 +25,7 @@ from arg.core.models.envelope import (
     Provenance,
     TraceStep,
 )
+from arg.core.models.evaluation import EvaluationContext, Finding
 from arg.core.models.identity import (
     AgentRecord,
     AgentStatus,
@@ -18,6 +34,21 @@ from arg.core.models.identity import (
 )
 
 __all__ = [
+    "AppliesTo",
+    "Control",
+    "ControlCategory",
+    "ControlKind",
+    "ControlSource",
+    "ControlsLoadError",
+    "Effect",
+    "Escalation",
+    "EvaluationContext",
+    "Finding",
+    "Mandate",
+    "MandateLimits",
+    "MandateRejection",
+    "ReviewStatus",
+    "Validity",
     "AgentRecord",
     "AgentStatus",
     "IdentityBinding",
