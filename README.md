@@ -56,4 +56,5 @@ Apache-2.0. See `LICENSE`.
 ```bash
 uv run python demo/engine_demo.py   # engine over sample envelopes, step by step
 uv run python -m demo.e2e_demo      # full HTTP lifecycle: decisions, tokens, escalation, audit
+uv run python -m demo.gateway_demo  # MCP gateway, standalone and hybrid, no agent code changes
 ```
