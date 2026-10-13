@@ -117,7 +117,21 @@ def build_example_bank(
         not_before=T0 - timedelta(days=5),
         not_after=T0 - timedelta(hours=1),
     )
+    # signed with a tiny limit, then widened by "the agent": the signature no longer matches
+    narrow = Mandate(
+        mandate_id="mandate-widened",
+        principal="alice.example",
+        agent_id="treasury-agent-1",
+        permitted_actions=["fx.trade"],
+        limits=MandateLimits(per_action=1),
+        not_before=T0 - timedelta(days=1),
+        not_after=T0 + timedelta(days=30),
+    )
+    widened = crypto.sign_mandate(narrow, principal_key).model_copy(
+        update={"permitted_actions": ["payment.initiate", "fx.trade"]}
+    )
     mandates = [
+        widened.model_dump(mode="json"),
         mandate("mandate-1", "treasury-agent-1"),
         mandate("mandate-2", "treasury-agent-2"),
         mandate("mandate-3", "treasury-agent-3"),

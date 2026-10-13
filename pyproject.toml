@@ -67,6 +67,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ARG"]  # test doubles implement abstract signatures
+"tests/conformance/*.py" = ["N802"]  # test_S01_… mirrors scenario IDs
 "src/arg/gateway/*.py" = ["ARG002"]  # renderers share one abstract signature
 "*.ipynb" = [
     "I",     # isort (import sorting)
@@ -86,6 +87,7 @@ python_files = "test_*.py"
 python_functions = "test_*"
 addopts = "-v --cov=src/arg/core --cov-report=term-missing"
 markers = [
+    "scenario(id): conformance scenario ID (conformance/scenarios.md)",
     "rego: needs the opa binary on PATH; skipped when absent",
     "req(id): requirement ID covered by the test (see docs/spec/requirements.md)",
 ]

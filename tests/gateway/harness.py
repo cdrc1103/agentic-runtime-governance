@@ -32,6 +32,26 @@ CREDS = {
         "mandate_ref": "mandate-exp",
         "network_context": "internal",
     },
+    "widened-tok": {
+        "agent_id": "treasury-agent-1",
+        "mandate_ref": "mandate-widened",
+        "network_context": "internal",
+    },
+    "agent2-tok": {
+        "agent_id": "treasury-agent-2",
+        "mandate_ref": "mandate-2",
+        "network_context": "internal",
+    },
+    "ghost-tok": {
+        "agent_id": "ghost-agent",
+        "mandate_ref": "mandate-1",
+        "network_context": "internal",
+    },
+    "suspended-tok": {
+        "agent_id": "suspended-agent",
+        "mandate_ref": "mandate-1",
+        "network_context": "internal",
+    },
 }
 WIRE = {
     "action_type": "payment.initiate",
