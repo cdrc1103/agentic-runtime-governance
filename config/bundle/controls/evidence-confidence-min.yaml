@@ -1,0 +1,11 @@
+control_id: evidence-confidence-min
+version: 1
+source: policy
+category: evidence
+kind: ai_specific
+applies_to: {action_types: [payment.initiate]}
+logic: {type: evidence, min_confidence: 0.8, signal: confidence}
+effect: escalate
+escalation: {queue: treasury-review, timeout_seconds: 900, reviewer_role: treasury-reviewer, on_timeout: block}
+owner: risk-and-compliance
+review_status: approved

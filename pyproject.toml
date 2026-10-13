@@ -94,4 +94,4 @@ exclude_lines = [
 strict = true
 disable_error_code = ["type-abstract"]  # registries take abstract classes by design
 python_version = "3.12"
-files = ["src", "tests", "scripts"]
+files = ["src", "tests", "scripts", "demo"]

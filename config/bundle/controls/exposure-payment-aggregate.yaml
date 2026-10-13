@@ -1,0 +1,10 @@
+control_id: exposure-payment-aggregate
+version: 1
+source: policy
+category: exposure
+applies_to: {action_types: [payment.initiate]}
+logic: {type: exposure, scope: aggregate, amount_parameter: amount, limit: 25000, key_by: principal, window_seconds: 3600}
+effect: escalate
+escalation: {queue: treasury-review, timeout_seconds: 900, reviewer_role: treasury-reviewer, on_timeout: block}
+owner: risk-and-compliance
+review_status: approved
