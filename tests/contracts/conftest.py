@@ -13,7 +13,7 @@ import pytest
 from arg.core.registry import registry_for
 
 # Modules whose import registers reference implementations; extended per phase.
-IMPLEMENTATION_MODULES: list[str] = []
+IMPLEMENTATION_MODULES: list[str] = ["arg.builtins"]
 
 
 def _load_implementations() -> None:

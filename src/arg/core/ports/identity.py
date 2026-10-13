@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from arg.core.types import JsonObject
+from arg.core.models import AgentRecord, Envelope, IdentityBinding
 
 
 class AgentRegistry(ABC):
@@ -12,20 +12,8 @@ class AgentRegistry(ABC):
     """
 
     @abstractmethod
-    def resolve(self, agent_id: str, network_context: str | None) -> JsonObject | None:
-        """Return the registry entry for ``agent_id`` in ``network_context``, or None."""
-
-
-class IdentityVerifier(ABC):
-    """Condition: the action is bound to a registered agent before anything else.
-
-    Otherwise it is rejected and the rejection is reported for audit.
-    Requirements: IDN-01, IDN-02, IDN-05.
-    """
-
-    @abstractmethod
-    def verify(self, envelope: JsonObject) -> JsonObject:
-        """Return a confirmed identity binding, or raise a reason-coded rejection."""
+    def resolve(self, agent_id: str, network_context: str | None) -> AgentRecord | None:
+        """Return the entry for ``agent_id`` in ``network_context``, or None."""
 
 
 class EnvelopeAuthenticator(ABC):
@@ -35,5 +23,17 @@ class EnvelopeAuthenticator(ABC):
     """
 
     @abstractmethod
-    def authenticate(self, envelope: JsonObject) -> bool:
-        """Return True only if the envelope's provenance checks out."""
+    def authenticate(self, envelope: Envelope, agent: AgentRecord) -> None:
+        """Return if the provenance checks out; raise ``IdentityRejection`` otherwise."""
+
+
+class IdentityVerifier(ABC):
+    """Condition: the action is bound to a registered agent before anything else.
+
+    Otherwise it is rejected with a reason code so the rejection can be audited.
+    Requirements: IDN-01, IDN-02, IDN-05.
+    """
+
+    @abstractmethod
+    def verify(self, envelope: Envelope) -> IdentityBinding:
+        """Return a confirmed binding or raise ``IdentityRejection``."""

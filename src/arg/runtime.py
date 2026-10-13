@@ -12,6 +12,7 @@ from typing import Any
 
 import yaml
 
+import arg.builtins  # noqa: F401  (registers reference implementations)
 from arg.core.factory import ComponentFactory
 from arg.core.ports import (
     AgentRegistry,

@@ -6,6 +6,8 @@ ENV-03:
 - tests/core/test_validation.py::test_valid_envelope_passes
 ENV-04:
 - tests/core/test_crypto.py::test_signed_envelope_verifies_and_tampering_is_detected
+- tests/core/test_identity.py::test_gateway_envelope_needs_trusted_gateway_and_observed_call
+- tests/core/test_identity.py::test_native_signature_required_and_must_verify
 - tests/core/test_validation.py::test_gateway_observed_call_must_match_declared_parameters
 ENV-05:
 - tests/core/test_envelope_models.py::test_canonicalisation_matches_rfc8785_sample
@@ -13,3 +15,24 @@ ENV-05:
 - tests/core/test_envelope_models.py::test_hash_is_independent_of_key_order_and_stable
 - tests/core/test_envelope_models.py::test_integers_beyond_safe_range_are_refused
 - tests/core/test_envelope_models.py::test_schema_version_is_declared
+IDN-01:
+- tests/contracts/test_agent_registry_contract.py::test_resolves_known_agent_and_returns_none_for_unknown[composite]
+- tests/contracts/test_agent_registry_contract.py::test_resolves_known_agent_and_returns_none_for_unknown[file]
+- tests/core/test_identity.py::test_gateway_envelope_needs_trusted_gateway_and_observed_call
+- tests/core/test_identity.py::test_identity_rejection_occurs_before_controls_retrieval
+- tests/core/test_identity.py::test_native_signature_required_and_must_verify
+- tests/core/test_identity.py::test_registered_active_agent_gets_binding
+- tests/core/test_identity.py::test_unknown_suspended_revoked_are_rejected_with_codes
+IDN-02:
+- tests/core/test_identity.py::test_identity_rejection_occurs_before_controls_retrieval
+IDN-03:
+- tests/contracts/test_agent_registry_contract.py::test_resolves_known_agent_and_returns_none_for_unknown[composite]
+- tests/contracts/test_agent_registry_contract.py::test_resolves_known_agent_and_returns_none_for_unknown[file]
+- tests/core/test_identity.py::test_file_registry_loads_yaml_and_rejects_duplicates
+IDN-04:
+- tests/core/test_identity.py::test_composite_picks_authoritative_registry_by_context
+IDN-05:
+- tests/core/test_identity.py::test_registered_active_agent_gets_binding
+- tests/core/test_identity.py::test_unknown_suspended_revoked_are_rejected_with_codes
+IDN-06:
+- tests/core/test_identity.py::test_registered_active_agent_gets_binding

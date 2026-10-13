@@ -1,0 +1,12 @@
+# Fictional agents of Example Bank. Add `public_keys` (PEM, Ed25519) for native agents;
+# the demo (Phase 10) generates keys at run time.
+agents:
+  - agent_id: treasury-agent-1
+    agent_class: treasury
+    status: active
+    principal: alice.example
+    allowed_network_contexts: [internal]
+  - agent_id: payments-agent-1
+    agent_class: payments
+    status: suspended
+    principal: bob.example
