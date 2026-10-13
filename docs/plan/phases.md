@@ -1,5 +1,10 @@
 # Phased task plan and quality gates
 
+> **Status (as of 2026-10-14):** Phases 0-7 and 9-12 done as scoped below; Phase 8 reduced to the
+> docking point by owner decision (no framework-specific adapters); T-1103 (Postgres stores) and
+> T-405's CI-only Rego run are the optional items; T-1101 Docker artefacts exist but were not
+> built in this environment. See `docs/conformance.md`, `docs/production-gaps.md`.
+
 > Unofficial reference implementation based on the SAFR white paper. Not regulatory guidance.
 
 ## Phased task plan

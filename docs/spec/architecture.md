@@ -42,3 +42,75 @@ flowchart LR
 **Telemetry:** OpenTelemetry spans per pipeline stage, metrics (decisions by outcome, stage latency, escalation queue depth). For the envelope's action trace, map to the OpenTelemetry GenAI conventions (`invoke_agent`, `execute_tool`). Check their current status and pin a version; at time of writing they were reported as "Development".
 
 ---
+
+## As built
+
+The diagrams below are original to this repository (Mermaid) and describe the implementation
+as it stands, which differs from the plan in a few places (noted under each).
+
+### Components and integration patterns
+
+```mermaid
+flowchart LR
+  subgraph AgentProcess[Agent process]
+    AG[Agent code] --> NA[NativeAdapter<br/>build_envelope / enforce]
+  end
+  NA -- "envelope (signed)" --> CL{GovernanceClient<br/>embedded or HTTP}
+  AG -. "tool call + token" .-> GW[Gateway<br/>MCP or HTTP egress]
+  GW -- "envelope from observed call<br/>(standalone)" --> CL
+  GW -- "token redeem<br/>(hybrid)" --> TK[/tokens/consume/]
+  CL --> DS
+  subgraph Core[Decision core]
+    DS[DecisionService] --> P[Pipeline stages]
+    DS --- ST[(StateStore)]
+    DS --- AU[(AuditStore + AnchorSink)]
+    DS --- EQ[EscalationQueue]
+    TS[TokenService]
+  end
+  DS --> TS
+  GW -- "allowed call" --> UP[Upstream tool / rail]
+  RV[Reviewer] -- resolution --> DS
+```
+
+### Decision pipeline
+
+```mermaid
+flowchart TD
+  A[raw envelope JSON] --> B{idempotent?<br/>envelope_id seen}
+  B -- yes --> R[return original decision]
+  B -- no --> V[validate: schema, completeness, coherence]
+  V --> I[identity: registry, status, context, origin authentication]
+  I --> M[mandate: validity, signature, revocation, depth]
+  M --> C[retrieve controls + counter snapshot]
+  C --> E[evaluate: evaluators, risk calibration, precedence]
+  E --> X{outcome}
+  X -- Auto-Execute / Observe --> S[reserve counters] --> T[issue token]
+  X -- Escalate --> Q[open escalation, cap check]
+  X -- Deny --> D
+  T --> D[audit append, hash chain]
+  Q --> D
+  V -. reject .-> D
+  I -. reject .-> D
+  M -. reject .-> D
+  D --> O[response]
+```
+
+Every rejection and every outcome ends in the audit append (AUD-01). Any exception anywhere
+becomes Deny (INT-05); if the append itself fails after reserving, the reservation is
+released (SG-04).
+
+### Escalation states
+
+```mermaid
+stateDiagram-v2
+  [*] --> PENDING: Escalate (queue below cap)
+  PENDING --> APPROVED: reviewer approves (token issued)
+  PENDING --> DECLINED: reviewer declines
+  PENDING --> MODIFIED: reviewer modifies (child envelope re-enters)
+  PENDING --> PENDING: timeout, on_timeout=senior (once)
+  PENDING --> TIMED_OUT: timeout, blocked
+```
+
+Differences from the plan: audit is performed by `DecisionService` on every path rather than
+as a configurable last stage (ADR-0014); a `mandate` stage was added; framework adapters are a
+docking point (`docs/adapters/README.md`) rather than shipped implementations.

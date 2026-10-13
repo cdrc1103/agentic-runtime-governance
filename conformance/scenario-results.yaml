@@ -1,0 +1,62 @@
+S01:
+- tests/conformance/test_scenarios.py::test_S01_payment_within_limit_auto_executes[gateway]
+- tests/conformance/test_scenarios.py::test_S01_payment_within_limit_auto_executes[native]
+S02:
+- tests/conformance/test_scenarios.py::test_S02_payment_above_limit_is_held[gateway]
+- tests/conformance/test_scenarios.py::test_S02_payment_above_limit_is_held[native]
+S03:
+- tests/conformance/test_scenarios.py::test_S03_aggregate_exposure_across_small_actions[gateway]
+- tests/conformance/test_scenarios.py::test_S03_aggregate_exposure_across_small_actions[native]
+S04:
+- tests/conformance/test_scenarios.py::test_S04_expired_mandate_denied[gateway]
+- tests/conformance/test_scenarios.py::test_S04_expired_mandate_denied[native]
+S05:
+- tests/conformance/test_scenarios.py::test_S05_unregistered_and_suspended_rejected_at_identity[gateway]
+- tests/conformance/test_scenarios.py::test_S05_unregistered_and_suspended_rejected_at_identity[native]
+S06:
+- tests/conformance/test_scenarios.py::test_S06_escalation_timeout_blocks
+S07:
+- tests/conformance/test_scenarios.py::test_S07_reviewer_without_authority_refused_and_logged
+S08:
+- tests/conformance/test_scenarios.py::test_S08_observed_call_governs_over_agent_declaration
+S09:
+- tests/conformance/test_scenarios.py::test_S09_native_envelope_with_invalid_signature_rejected
+S10:
+- tests/conformance/test_scenarios.py::test_S10_hybrid_call_without_token_refused
+S11:
+- tests/conformance/test_scenarios.py::test_S11_token_replay_refused
+S12:
+- tests/conformance/test_scenarios.py::test_S12_altered_parameters_refused
+S13:
+- tests/conformance/test_scenarios.py::test_S13_tampered_deleted_reordered_entries_fail_verify
+S14:
+- tests/conformance/test_scenarios.py::test_S14_unapproved_control_refused_in_production
+S15:
+- tests/conformance/test_scenarios.py::test_S15_open_escalation_cap
+S16:
+- tests/conformance/test_scenarios.py::test_S16_core_failure_never_auto_executes
+S17:
+- tests/conformance/test_scenarios.py::test_S17_agent_cannot_widen_its_own_mandate[gateway]
+- tests/conformance/test_scenarios.py::test_S17_agent_cannot_widen_its_own_mandate[native]
+S18:
+- tests/conformance/test_scenarios.py::test_S18_exposure_keyed_by_principal_spans_agents[gateway]
+- tests/conformance/test_scenarios.py::test_S18_exposure_keyed_by_principal_spans_agents[native]
+S19:
+- tests/conformance/test_scenarios.py::test_S19_rate_burst[gateway]
+- tests/conformance/test_scenarios.py::test_S19_rate_burst[native]
+S20:
+- tests/conformance/test_scenarios.py::test_S20_low_confidence_escalates_regardless_of_value
+S21:
+- tests/conformance/test_scenarios.py::test_S21_anomalous_action_within_limits_is_observed
+S22:
+- tests/conformance/test_scenarios.py::test_S22_multi_step_workflow_steps_are_independent[gateway]
+- tests/conformance/test_scenarios.py::test_S22_multi_step_workflow_steps_are_independent[native]
+S23:
+- tests/conformance/test_scenarios.py::test_S23_duplicate_envelope_id_returns_original
+S24:
+- tests/conformance/test_scenarios.py::test_S24_reviewer_modify_reenters_with_parent_link
+S25:
+- tests/conformance/test_scenarios.py::test_S25_open_network_context_picks_authoritative_registry
+S26:
+- tests/conformance/test_scenarios.py::test_S26_identical_inputs_identical_outcomes[gateway]
+- tests/conformance/test_scenarios.py::test_S26_identical_inputs_identical_outcomes[native]

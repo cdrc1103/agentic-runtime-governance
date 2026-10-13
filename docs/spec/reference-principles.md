@@ -31,9 +31,12 @@
 | `TokenService` | Issue and verify decision tokens | `Ed25519TokenService` | INT-04 |
 | `EscalationQueue` | Hold pending reviews; look up reviewer authority | state-store-backed queue, file-based reviewer directory | ESC-01..06 |
 | `Authenticator` | Authenticate API callers into a principal with roles | `BearerTokenAuthenticator`, `UnsafeNoAuthenticator` (tests only) | D5 |
-| `NativeAdapter` | Build an envelope from a framework event and enforce the outcome | One subclass per framework, plus a generic wrapper | INT-01 |
+| `NativeAdapter` | Build an envelope from a framework event and enforce the outcome | `GenericToolAdapter` (framework-specific adapters are **not** shipped; see `docs/adapters/README.md`) | INT-01 |
+| `GovernanceClient` | Submit an envelope and get a decision before acting | `EmbeddedClient`, `HttpClient` | INT-01, INT-05 |
 | `GatewayAdapter` | Intercept a call, build the envelope from the observed call, enforce the outcome | `McpGateway`, `HttpEgressGateway` | INT-02 |
-| `PipelineStage` | One step of the paper's action lifecycle | `ValidateStage`, `IdentityStage`, `RetrieveStage`, `EvaluateStage`, `ReserveStage`, `AuditStage` | Action Lifecycle, DSP-05 |
+| `IdentityResolver` | Establish the calling agent from credentials the gateway verified | `StaticBearerIdentityResolver` | INT-02, ENV-04 |
+| `TokenRedeemer` | Verify and consume a decision token against the observed action | `EmbeddedRedeemer`, `HttpRedeemer` | INT-04 |
+| `PipelineStage` | One step of the paper's action lifecycle | `ValidateStage`, `IdentityStage`, `MandateStage`, `RetrieveStage`, `EvaluateStage`, `ReserveStage` (audit is always performed by `DecisionService`, see ADR-0014) | Action Lifecycle, DSP-05 |
 
 ### Factory and registry pattern
 - Each abstract class has a `ComponentRegistry` mapping a name to a class. Implementations register with a decorator, e.g. `@register(AuditStore, "sqlite")`.

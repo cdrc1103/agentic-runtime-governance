@@ -1,0 +1,21 @@
+# Local reference stack: decision service + a scheduled sweeper caller.
+# Requires ARG_TOKENS and ARG_TOKEN_KEY in the environment (see Dockerfile header).
+services:
+  service:
+    build: .
+    ports: ["8080:8080"]
+    environment:
+      ARG_TOKENS: ${ARG_TOKENS:?set ARG_TOKENS}
+      ARG_TOKEN_KEY: ${ARG_TOKEN_KEY:?set ARG_TOKEN_KEY}
+  sweeper:
+    image: curlimages/curl:8.11.1
+    depends_on: [service]
+    environment:
+      ARG_ADMIN_TOKEN: ${ARG_ADMIN_TOKEN:?set ARG_ADMIN_TOKEN (an admin-role token from ARG_TOKENS)}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          curl -fsS -X POST -H "Authorization: Bearer $$ARG_ADMIN_TOKEN" http://service:8080/v1/escalations/sweep || true
+          sleep 30
+        done
