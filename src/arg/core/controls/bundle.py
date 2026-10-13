@@ -1,7 +1,7 @@
 """Controls bundle loading with manifest hash (CTL-07, T-301, T-302).
 
 Layout: ``<bundle>/controls/*.yaml`` (one control per file); other files (e.g. the
-calibration file of Phase 4) live beside it. The manifest hash covers every YAML file in the
+calibration file of Phase 4) live beside it. The manifest hash covers every YAML and Rego file in the
 bundle, so editing any of them changes the policy version.
 """
 
@@ -24,10 +24,11 @@ class ControlBundle:
 
 
 def manifest_hash(root: Path) -> str:
-    """Hash of ``[{path, sha256}]`` over all YAML files under ``root``, sorted by path."""
+    """Hash of ``[{path, sha256}]`` over all YAML and Rego files under ``root``, sorted by path."""
+    paths = sorted([*root.rglob("*.yaml"), *root.rglob("*.rego")])
     entries = [
         {"path": p.relative_to(root).as_posix(), "sha256": sha256_hex(p.read_bytes())}
-        for p in sorted(root.rglob("*.yaml"))
+        for p in paths
     ]
     return canonical_hash({"files": entries})
 

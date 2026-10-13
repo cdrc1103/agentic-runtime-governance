@@ -72,6 +72,7 @@ python_files = "test_*.py"
 python_functions = "test_*"
 addopts = "-v --cov=src/arg/core --cov-report=term-missing"
 markers = [
+    "rego: needs the opa binary on PATH; skipped when absent",
     "req(id): requirement ID covered by the test (see docs/spec/requirements.md)",
 ]
 
