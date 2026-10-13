@@ -77,7 +77,7 @@ def test_control_model_requires_logic_type_and_escalation_block() -> None:
 @pytest.mark.req("CTL-01", "CTL-02", "CTL-05")
 def test_sample_bundle_loads_with_categories_and_kinds() -> None:
     """The shipped sample bundle loads in production mode; categories and sources parse."""
-    b = load_bundle(Path("config"), production=True)
+    b = load_bundle(Path("config/bundle"), production=True)
     cats = {c.category.value for c in b.controls}
     assert {"authorisation", "exposure"} <= cats
     assert all(c.source.value in {"policy", "regulatory", "product", "mandate"} for c in b.controls)
@@ -269,7 +269,7 @@ class Boom(ControlEvaluator):
 @pytest.mark.req("DSP-01")
 def test_dispatch_by_logic_type_and_fail_closed() -> None:
     """Evaluators are chosen by logic.type; missing or crashing ones yield a Deny finding."""
-    ctx = EvaluationContext(envelope=make_envelope(), identity=ID)
+    ctx = EvaluationContext(envelope=make_envelope(), identity=ID, at=T0)
     fires = Control(**CTRL)
     other = Control(**{**CTRL, "control_id": "c-2", "logic": {"type": "unknown"}})
     boom = Control(**{**CTRL, "control_id": "c-3", "logic": {"type": "boom"}, "effect": "observe"})

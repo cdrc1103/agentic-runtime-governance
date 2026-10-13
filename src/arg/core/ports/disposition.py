@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 
-from arg.core.types import JsonObject
+from arg.core.models import EvaluationContext, Finding, Outcome, RiskProfile
 
 
 class RiskCalibrator(ABC):
@@ -13,8 +13,8 @@ class RiskCalibrator(ABC):
     """
 
     @abstractmethod
-    def calibrate(self, action: JsonObject, signals: JsonObject) -> JsonObject:
-        """Return the risk profile (reversibility, materiality, impact, sensitivity, novelty)."""
+    def calibrate(self, context: EvaluationContext) -> RiskProfile:
+        """Return the risk profile, including the outcome it indicates on its own."""
 
 
 class ResolutionPolicy(ABC):
@@ -24,5 +24,5 @@ class ResolutionPolicy(ABC):
     """
 
     @abstractmethod
-    def resolve(self, findings: Sequence[JsonObject], risk_profile: JsonObject) -> str:
+    def resolve(self, findings: Sequence[Finding], indicated: Outcome) -> Outcome:
         """Return the single outcome."""

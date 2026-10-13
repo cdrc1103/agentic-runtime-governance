@@ -3,6 +3,7 @@ CTL-01:
 - tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
 CTL-02:
 - tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
+- tests/core/test_engine.py::test_evidence_quality_applies_regardless_of_value
 CTL-03:
 - tests/core/test_controls.py::test_agent_cannot_widen_a_mandate
 - tests/core/test_controls.py::test_mandate_rejections
@@ -14,6 +15,11 @@ CTL-04:
 - tests/core/test_controls.py::test_valid_mandate_resolves
 CTL-05:
 - tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
+- tests/core/test_engine.py::test_authorisation_conditions
+- tests/core/test_engine.py::test_counter_key_by_principal_spans_agent_identities
+- tests/core/test_engine.py::test_evidence_quality_applies_regardless_of_value
+- tests/core/test_engine.py::test_exposure_per_action_aggregate_and_mandate_limit
+- tests/core/test_engine.py::test_rate_limit
 CTL-06:
 - tests/core/test_controls.py::test_every_control_names_an_owner
 CTL-07:
@@ -21,8 +27,24 @@ CTL-07:
 - tests/core/test_controls.py::test_production_mode_refuses_unapproved_controls
 DSP-01:
 - tests/core/test_controls.py::test_dispatch_by_logic_type_and_fail_closed
+- tests/core/test_engine.py::test_authorisation_conditions
+- tests/core/test_engine.py::test_engine_outcomes_end_to_end
+DSP-02:
+- tests/core/test_engine.py::test_engine_outcomes_end_to_end
+- tests/core/test_engine.py::test_precedence_deny_over_escalate_over_observe_over_auto
+DSP-03:
+- tests/core/test_engine.py::test_calibration_bands_novelty_and_thresholds
+- tests/core/test_engine.py::test_raising_materiality_never_relaxes_outcome
 DSP-04:
 - tests/core/test_controls.py::test_production_mode_refuses_unapproved_controls
+- tests/core/test_engine.py::test_calibration_bands_novelty_and_thresholds
+- tests/core/test_engine.py::test_production_refuses_unapproved_calibration
+DSP-05:
+- tests/core/test_engine.py::test_no_authority_carries_forward_between_steps
+DSP-06:
+- tests/core/test_engine.py::test_precedence_deny_over_escalate_over_observe_over_auto
+DSP-07:
+- tests/core/test_engine.py::test_engine_is_deterministic
 ENV-02:
 - tests/core/test_envelope_models.py::test_envelope_carries_action_trace_and_context
 ENV-03:

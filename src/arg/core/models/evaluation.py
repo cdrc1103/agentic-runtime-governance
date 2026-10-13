@@ -2,6 +2,7 @@
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Literal
 
 from pydantic import JsonValue
@@ -15,12 +16,14 @@ from arg.core.models.identity import IdentityBinding
 class EvaluationContext:
     """Everything an evaluator may look at; nothing else (determinism, DSP-07).
 
+    ``at`` is the decision time supplied by the caller (never read from a clock).
     ``state`` is a snapshot of exposure/rate counters taken by the caller;
     ``signals`` are probabilistic assessments computed outside the core (constitution 8).
     """
 
     envelope: Envelope
     identity: IdentityBinding
+    at: datetime
     mandate: Mandate | None = None
     state: Mapping[str, float] = field(default_factory=dict)
     signals: Mapping[str, float | str | bool] = field(default_factory=dict)

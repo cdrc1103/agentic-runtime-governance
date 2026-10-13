@@ -15,6 +15,18 @@ from arg.core.models.controls import (
     ReviewStatus,
     Validity,
 )
+from arg.core.models.disposition import (
+    ActionCalibration,
+    Calibration,
+    Disposition,
+    Level,
+    MaterialityBand,
+    NoveltyRule,
+    Observation,
+    Outcome,
+    Reversibility,
+    RiskProfile,
+)
 from arg.core.models.envelope import (
     SCHEMA_VERSION,
     Action,
@@ -34,6 +46,16 @@ from arg.core.models.identity import (
 )
 
 __all__ = [
+    "ActionCalibration",
+    "Calibration",
+    "Disposition",
+    "Level",
+    "MaterialityBand",
+    "NoveltyRule",
+    "Observation",
+    "Outcome",
+    "Reversibility",
+    "RiskProfile",
     "AppliesTo",
     "Control",
     "ControlCategory",

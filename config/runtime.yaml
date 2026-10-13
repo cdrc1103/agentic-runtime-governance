@@ -6,7 +6,7 @@ components:
   anchor_sink: {type: file, path: var/anchors.jsonl}
   agent_registry: {type: file, path: config/agents.yaml}   # Phase 2
   identity_verifier: {type: default}
-  controls_repository: {type: bundle, path: config/controls}  # Phase 3
+  controls_repository: {type: bundle, path: config/bundle}  # Phase 3
   resolution_policy: {type: precedence}  # Phase 4
   token_service: {type: ed25519}         # Phase 7
 evaluators:

@@ -1,0 +1,17 @@
+# Fictional calibration for Example Bank. Score = sum of ordinal ranks (0..2 each) + 1 if novel.
+review_status: approved
+escalation: {queue: treasury-review, timeout_seconds: 900, reviewer_role: treasury-reviewer, on_timeout: block}
+action_types:
+  payment.initiate:
+    reversibility: partially_reversible
+    customer_impact: low
+    regulatory_sensitivity: medium
+    materiality_parameter: amount
+    materiality_bands:
+      - {upper: 1000, level: low}
+      - {upper: 10000, level: medium}
+      - {upper: null, level: high}
+    novelty: {signal: anomaly_score, threshold: 0.8}
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
