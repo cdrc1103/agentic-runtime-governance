@@ -45,3 +45,10 @@ ARG_CONFIG=config/runtime.yaml ARG_TOKENS='{"t":{"principal":"ops","roles":["adm
 ## Licence
 
 Apache-2.0. See `LICENSE`.
+
+## Demos (no framework adapters needed)
+
+```bash
+uv run python demo/engine_demo.py   # engine over sample envelopes, step by step
+uv run python -m demo.e2e_demo      # full HTTP lifecycle: decisions, tokens, escalation, audit
+```
