@@ -88,3 +88,20 @@ Missing own repo: clone `git@github.com:cdrc1103/<repo>.git` into `mine/`.
 - Telegraph. Drop filler. Min tokens.
 - Code comments only where logic isn't self-evident.
 - No backwards-compat shims, no speculative abstractions, no extra error handling for impossible cases.
+
+## Project Constitution (agentic-runtime-governance)
+
+1. **Spec first.** No behaviour exists unless a requirement ID covers it. Missing behaviour means: add a requirement (tag `[DESIGN]`), add it to `spec-gaps.md` if the paper is silent, then test, then code.
+2. **Tag every requirement.** `[PAPER]` = stated or directly implied by the SAFR paper. `[DESIGN]` = our decision where the paper is silent. Never present a `[DESIGN]` item as part of SAFR.
+3. **Tests carry requirement IDs.** Use `@pytest.mark.req("ENV-01")`. CI fails if any `[PAPER]` requirement has no test.
+4. **Paraphrase, do not copy.** The paper is © MAS, all rights reserved. No copied text or figures. Draw our own diagrams (Mermaid). Cite by section name.
+5. **Wording rules** (README, docs, code comments, commit messages): say "based on" or "implements the SAFR reference model". Never "compliant", "certified", "official", or "MAS requires". Always state that SAFR is not regulatory guidance.
+6. **Fictional data only.** Fictional bank ("Example Bank"), fictional agents, generated test keys. No real institution, client, standard, or internal terminology. No real keys or secrets in the repo.
+7. **Fail closed.** Any internal error, timeout, or unreachable dependency in a decision path yields Deny (or Escalate where configured), never Auto-Execute.
+8. **Deterministic core.** The disposition engine is a pure function. Probabilistic assessments (confidence, anomaly scores) are computed outside it and passed in as `signals`.
+9. **Ports and adapters.** Core has no framework, cloud, or web dependencies. Stores, registries, and sinks are interfaces with shared contract test suites.
+10. **Stop and ask** at every checkpoint and for every open decision in `docs/spec/open-decisions.md`.
+11. **No network in unit tests.** Integration tests that need a real framework live behind an extras marker.
+12. **Quality bar:** `ruff`, `mypy --strict`, `pytest`, coverage target 90% on `arg/core`, `pip-audit`, and a secrets scan, all green in CI.
+13. **Reference, not product.** The goal is a readable, traceable reference showing how each SAFR condition can be satisfied, not production software. Prefer clarity over performance. Do not build production hardening; document it in `docs/production-gaps.md` instead (`docs/spec/reference-principles.md`).
+14. **Abstract contracts and factories.** Every swappable mechanism is an abstract base class with a `Condition:` docstring and a contract test suite; concrete classes are created only through the factory and composition root (`docs/spec/reference-principles.md`).
