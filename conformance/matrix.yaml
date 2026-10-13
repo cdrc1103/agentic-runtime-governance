@@ -112,6 +112,9 @@ DSP-06:
 DSP-07:
 - tests/core/test_audit.py::test_decision_reconstructs_from_the_entry_alone
 - tests/core/test_engine.py::test_engine_is_deterministic
+ENV-01:
+- tests/service/test_decision_service.py::test_no_action_proceeds_without_declaration_authorisation_and_assessment[memory]
+- tests/service/test_decision_service.py::test_no_action_proceeds_without_declaration_authorisation_and_assessment[sqlite]
 ENV-02:
 - tests/core/test_envelope_models.py::test_envelope_carries_action_trace_and_context
 ENV-03:

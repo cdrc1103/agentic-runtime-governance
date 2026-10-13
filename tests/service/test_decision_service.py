@@ -228,3 +228,20 @@ def test_reserve_stage_all_or_nothing() -> None:
     assert store.usage("a", 60, T0) == 0 and store.usage("b", 60, T0) == 95
     held = Disposition(Outcome.ESCALATE, (), (), profile)
     assert stage.run({"disposition": held, "specs": specs, "now": T0})["reserved"] == []
+
+
+@pytest.mark.req("ENV-01")
+def test_no_action_proceeds_without_declaration_authorisation_and_assessment(w: World) -> None:
+    """Only a well-formed, authenticated, assessed envelope can reach Auto-Execute."""
+    bare_action = {"type": "payment.initiate", "amount": 500}  # no envelope around it
+    assert w.svc.decide(bare_action).outcome == "deny"
+    ok = w.decide(500)
+    assert ok.outcome == "auto_execute"
+    [entry] = [e for e in w.audit() if e.outcome == "auto_execute"]
+    assert entry.identity_result.status == "confirmed"  # declared + authenticated
+    assert entry.mandate_snapshot is not None  # authorised
+    assert entry.rules_applied and entry.policy_version  # assessed against controls
+    # every proceeding outcome in the log has all three
+    for e in w.audit():
+        if e.outcome in ("auto_execute", "observe"):
+            assert e.identity_result.status == "confirmed" and e.rules_applied
