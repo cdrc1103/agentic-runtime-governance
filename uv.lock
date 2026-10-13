@@ -18,6 +18,10 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+gateway = [
+    { name = "httpx2" },
+    { name = "starlette" },
+]
 service = [
     { name = "fastapi" },
     { name = "opentelemetry-api" },
@@ -42,14 +46,16 @@ dev = [
 requires-dist = [
     { name = "cryptography", specifier = ">=50.0.2" },
     { name = "fastapi", marker = "extra == 'service'", specifier = ">=0.143.0" },
+    { name = "httpx2", marker = "extra == 'gateway'", specifier = ">=2.13.1" },
     { name = "opentelemetry-api", marker = "extra == 'service'", specifier = ">=1.45.1" },
     { name = "opentelemetry-sdk", marker = "extra == 'service'", specifier = ">=1.45.1" },
     { name = "pydantic", specifier = ">=2.14.1" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rfc8785", specifier = ">=0.1.4" },
+    { name = "starlette", marker = "extra == 'gateway'", specifier = ">=1.8.0" },
     { name = "uvicorn", marker = "extra == 'service'", specifier = ">=0.54.0" },
 ]
-provides-extras = ["service"]
+provides-extras = ["service", "gateway"]
 
 [package.metadata.requires-dev]
 dev = [

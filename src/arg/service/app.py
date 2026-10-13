@@ -110,14 +110,24 @@ def create_app(runtime: GovernanceRuntime, authenticator: Authenticator) -> Fast
 
     @app.post("/v1/decisions")
     async def decide(
-        request: Request, _: Annotated[Principal, Depends(require_role("submit"))]
+        request: Request, who: Annotated[Principal, Depends(require_role("submit"))]
     ) -> DecisionResponse:
         try:
             body = await request.json()
         except ValueError:
             body = None
         # Anything that is not a JSON object is still decided (and audited) as a rejection.
-        return service.decide(body if isinstance(body, dict) else {})
+        raw = body if isinstance(body, dict) else {}
+        prov = raw.get("provenance")
+        if (
+            isinstance(prov, dict)
+            and prov.get("origin") == "gateway"
+            and (prov.get("adapter_id") != who.name)
+        ):
+            # A gateway-origin envelope is authentic only if the authenticated caller *is*
+            # that gateway (ENV-04); otherwise any submitter could claim to be one.
+            raise HTTPException(403, "gateway-origin envelopes must come from that gateway")
+        return service.decide(raw)
 
     @app.get("/v1/escalations/{escalation_id}", response_model=None)
     def get_escalation(

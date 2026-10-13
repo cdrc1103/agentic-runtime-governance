@@ -1,0 +1,26 @@
+# Sample gateway configuration (Example Bank, fictional). Tokens come from your secret store;
+# the values below are placeholders for a local demo only.
+gateway_id: gateway-1
+mode: standalone            # or: hybrid (requires X-ARG-Decision-Token from a native decision)
+protocol: mcp               # or: http-egress
+upstream: http://localhost:9000
+credentials:
+  demo-agent-token:
+    agent_id: treasury-agent-1
+    mandate_ref: mandate-1
+    network_context: internal
+tools:
+  wire_transfer:
+    action_type: payment.initiate
+    scope: "account:{arguments.account}"
+    parameters: {amount: arguments.amount, currency: arguments.currency}
+    # signals are operator-asserted, never agent-reported; omit if evidence controls apply
+    signals: {confidence: 0.9}
+passthrough_tools: [get_weather]
+routes:                      # used when protocol: http-egress
+  - name: pay
+    method: POST
+    path: /payments/{account}
+    action_type: payment.initiate
+    scope: "account:{path.account}"
+    parameters: {amount: body.amount, currency: body.currency}

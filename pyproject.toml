@@ -27,6 +27,10 @@ service = [
     "opentelemetry-sdk>=1.45.1",
     "uvicorn>=0.54.0",
 ]
+gateway = [
+    "httpx2>=2.13.1",
+    "starlette>=1.8.0",
+]
 
 [dependency-groups]
 dev = [
@@ -63,6 +67,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ARG"]  # test doubles implement abstract signatures
+"src/arg/gateway/*.py" = ["ARG002"]  # renderers share one abstract signature
 "*.ipynb" = [
     "I",     # isort (import sorting)
     "E401",  # multiple imports on one line

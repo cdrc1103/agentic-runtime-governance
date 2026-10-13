@@ -55,6 +55,7 @@ def build_example_bank(
     audit: str = "memory",
     controls_path: Path = BUNDLE,
     tokens: bool = True,
+    trusted_gateways: tuple[str, ...] = ("gateway-1",),
 ) -> ExampleBank:
     """Build a runtime with keys generated now; clock fixed at T0."""
     agent_key = crypto.generate_private_key()
@@ -144,7 +145,10 @@ def build_example_bank(
             "state_store": state_cfg,
             "audit_store": audit_cfg,
             "agent_registry": {"type": "file", "path": str(tmp / "agents.yaml")},
-            "envelope_authenticator": {"type": "by-origin"},
+            "envelope_authenticator": {
+                "type": "by-origin",
+                "trusted_gateways": list(trusted_gateways),
+            },
             "identity_verifier": {"type": "default"},
             "controls_repository": {"type": "bundle", "path": str(controls_path)},
             "mandate_resolver": {"type": "file", "path": str(tmp / "mandates.yaml")},

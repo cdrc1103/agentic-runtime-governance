@@ -130,6 +130,7 @@ ENV-04:
 - tests/core/test_identity.py::test_gateway_envelope_needs_trusted_gateway_and_observed_call
 - tests/core/test_identity.py::test_native_signature_required_and_must_verify
 - tests/core/test_validation.py::test_gateway_observed_call_must_match_declared_parameters
+- tests/gateway/test_mcp_gateway.py::test_s08_observed_call_governs_and_forged_gateway_envelopes_are_refused
 - tests/service/test_decision_service.py::test_s09_invalid_signature_rejected[memory]
 - tests/service/test_decision_service.py::test_s09_invalid_signature_rejected[sqlite]
 ENV-05:
@@ -201,6 +202,12 @@ INT-01:
 - tests/adapters/test_docking.py::test_blocked_and_pending_actions_never_execute
 - tests/adapters/test_docking.py::test_decision_arrives_before_the_agent_acts
 - tests/adapters/test_docking.py::test_governed_tool_sync
+INT-02:
+- tests/gateway/test_http_egress.py::test_allowed_call_forwarded_with_original_body
+- tests/gateway/test_http_egress.py::test_denied_and_pending_are_403_with_structured_reasons
+- tests/gateway/test_mcp_gateway.py::test_allowed_call_is_forwarded_untouched_and_audited
+- tests/gateway/test_mcp_gateway.py::test_denied_and_escalated_calls_get_structured_tool_errors
+- tests/gateway/test_mcp_gateway.py::test_s08_observed_call_governs_and_forged_gateway_envelopes_are_refused
 INT-03:
 - tests/adapters/test_docking.py::test_governance_sits_between_guardrail_and_rail_and_replaces_neither
 INT-04:
@@ -211,6 +218,10 @@ INT-04:
 - tests/core/test_tokens.py::test_tampering_and_foreign_keys_refused
 - tests/core/test_tokens.py::test_valid_token_claims
 - tests/core/test_tokens.py::test_wrong_agent_and_altered_action_refused
+- tests/gateway/test_http_egress.py::test_hybrid_requires_matching_one_time_token
+- tests/gateway/test_mcp_gateway.py::test_hybrid_forwards_with_matching_token_then_refuses_replay_s11
+- tests/gateway/test_mcp_gateway.py::test_s10_call_without_token_is_refused
+- tests/gateway/test_mcp_gateway.py::test_s12_altered_parameters_or_agent_refused_and_token_survives
 - tests/service/test_token_flow.py::test_consume_endpoint_s11_s12
 - tests/service/test_token_flow.py::test_duplicate_submission_returns_the_same_token
 - tests/service/test_token_flow.py::test_expired_token_refused_at_consume
@@ -219,6 +230,9 @@ INT-04:
 INT-05:
 - tests/adapters/test_docking.py::test_blocked_and_pending_actions_never_execute
 - tests/adapters/test_docking.py::test_unreachable_core_fails_closed
+- tests/gateway/test_http_egress.py::test_denied_and_pending_are_403_with_structured_reasons
+- tests/gateway/test_mcp_gateway.py::test_core_unreachable_fails_closed_at_the_gateway
+- tests/gateway/test_mcp_gateway.py::test_denied_and_escalated_calls_get_structured_tool_errors
 - tests/service/test_api.py::test_decision_roundtrip_and_malformed_bodies_are_decided_not_crashed
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[memory]
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[sqlite]
