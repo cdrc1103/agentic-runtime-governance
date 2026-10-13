@@ -8,3 +8,4 @@ One ADR per spec-gap default (`docs/spec/spec-gaps.md`). Later decisions (e.g. R
 | 0011 | Rego evaluator via OPA CLI |
 | 0012 | Risk calibration as additive ordinal score |
 | 0013 | Composite registry alias resolution |
+| 0014 | Decision service: audit ownership, reservations, reviewer re-entry |

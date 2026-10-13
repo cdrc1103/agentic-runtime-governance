@@ -118,6 +118,7 @@ class RiskProfile:
     indicated_outcome: Outcome
     escalation: Escalation | None = None
     reason_codes: tuple[str, ...] = ()
+    materiality_value: float | None = None
 
 
 @dataclass(frozen=True)

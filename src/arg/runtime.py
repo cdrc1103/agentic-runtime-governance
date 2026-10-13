@@ -13,6 +13,8 @@ from typing import Any
 import yaml
 
 import arg.builtins  # noqa: F401  (registers reference implementations)
+from arg.core.decision.service import DecisionService
+from arg.core.engine.disposition import DispositionEngine
 from arg.core.factory import ComponentFactory
 from arg.core.ports import (
     AgentRegistry,
@@ -57,6 +59,7 @@ class GovernanceRuntime:
     components: dict[str, Any] = field(default_factory=dict)
     evaluators: dict[str, ControlEvaluator] = field(default_factory=dict)
     pipeline: list[PipelineStage] = field(default_factory=list)
+    decision_service: DecisionService | None = None
 
 
 def _accepted_deps(cls: type, built: Mapping[str, Any]) -> dict[str, Any]:
@@ -83,6 +86,12 @@ def build_runtime(config: Mapping[str, Any]) -> GovernanceRuntime:
         )
     for name, block in config.get("evaluators", {}).items():
         runtime.evaluators[name] = ComponentFactory(registry_for(ControlEvaluator)).create(block)
+    if "risk_calibrator" in runtime.components and "resolution_policy" in runtime.components:
+        runtime.components["disposition_engine"] = DispositionEngine(
+            runtime.evaluators,
+            runtime.components["risk_calibrator"],
+            runtime.components["resolution_policy"],
+        )
     stage_reg = registry_for(PipelineStage)
     stage_factory: ComponentFactory[PipelineStage] = ComponentFactory(stage_reg)
     for stage in config.get("pipeline", []):
@@ -91,6 +100,17 @@ def build_runtime(config: Mapping[str, Any]) -> GovernanceRuntime:
             stage_factory.create(
                 block, **_accepted_deps(stage_reg.get(block["type"]), runtime.components)
             )
+        )
+    needed = ("state_store", "audit_store", "escalation_queue", "controls_repository")
+    if runtime.pipeline and all(n in runtime.components for n in needed):
+        service_cfg = config.get("service", {})
+        runtime.decision_service = DecisionService(
+            runtime.pipeline,
+            runtime.components["state_store"],
+            runtime.components["audit_store"],
+            runtime.components["escalation_queue"],
+            runtime.components["controls_repository"],
+            **service_cfg,
         )
     return runtime
 

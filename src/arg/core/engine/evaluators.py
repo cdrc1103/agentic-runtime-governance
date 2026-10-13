@@ -7,7 +7,7 @@ Control validity periods are applied at retrieval; the mandate window is re-chec
 
 from collections.abc import Sequence
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from arg.core.engine.keys import counter_key
 from arg.core.models import Control, EvaluationContext, Finding
@@ -71,6 +71,12 @@ class _ExposureLogic(_Logic):
     window_seconds: int | None = None
     apply_mandate_limit: bool = False
 
+    @model_validator(mode="after")
+    def _aggregate_needs_window(self) -> "_ExposureLogic":
+        if self.scope == "aggregate" and not self.window_seconds:
+            raise ValueError("aggregate exposure needs window_seconds")
+        return self
+
 
 def amount_of(context: EvaluationContext, parameter: str) -> float | None:
     """Return the numeric action parameter, or None if absent or not a number."""
@@ -78,6 +84,19 @@ def amount_of(context: EvaluationContext, parameter: str) -> float | None:
     if isinstance(value, bool) or not isinstance(value, int | float):
         return None
     return float(value)
+
+
+def effective_limit(logic: _ExposureLogic, context: EvaluationContext) -> float:
+    """Control limit, narrowed by the mandate's grant when ``apply_mandate_limit`` is set."""
+    limit = logic.limit
+    mandate = context.mandate
+    if logic.apply_mandate_limit and mandate is not None:
+        granted = (
+            mandate.limits.per_action if logic.scope == "per_action" else mandate.limits.aggregate
+        )
+        if granted is not None:
+            limit = min(limit, granted)
+    return limit
 
 
 @register(ControlEvaluator, "exposure")
@@ -90,16 +109,7 @@ class ExposureEvaluator(ControlEvaluator):
         amount = amount_of(context, logic.amount_parameter)
         if amount is None:
             return [_fire(control, "EXP_AMOUNT_UNREADABLE", parameter=logic.amount_parameter)]
-        limit = logic.limit
-        mandate = context.mandate
-        if logic.apply_mandate_limit and mandate is not None:
-            granted = (
-                mandate.limits.per_action
-                if logic.scope == "per_action"
-                else mandate.limits.aggregate
-            )
-            if granted is not None:
-                limit = min(limit, granted)
+        limit = effective_limit(logic, context)
         if logic.scope == "per_action":
             if amount > limit:
                 return [_fire(control, "EXP_PER_ACTION_EXCEEDED", amount=amount, limit=limit)]

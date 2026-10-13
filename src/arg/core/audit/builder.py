@@ -13,6 +13,7 @@ from arg.core.models import (
     AuditObservation,
     Disposition,
     Envelope,
+    EscalationRecord,
     IdentityBinding,
     IdentityResult,
     Mandate,
@@ -120,4 +121,29 @@ def content_from_rejection(
         outcome="deny",
         basis=AuditBasis(controlling=[code]),
         stage_timings_ms=dict(stage_timings_ms or {}),
+    )
+
+
+def content_for_reviewer(
+    record: EscalationRecord,
+    outcome: str,
+    code: str,
+    decision: Mapping[str, Any],
+    *,
+    recorded_at: datetime,
+    policy_version: str | None = None,
+) -> AuditContent:
+    """Audit content for a reviewer action, refusal, or timeout (ESC-04, ESC-05)."""
+    ident = {k: v for k, v in record.identity.items() if k not in {"status", "code", "detail"}}
+    return AuditContent(
+        agent_stream=record.agent_stream,
+        recorded_at=recorded_at,
+        decided_at_stage="reviewer",
+        envelope=record.envelope,
+        identity_result=IdentityResult.model_validate({"status": "confirmed", **ident}),
+        policy_version=policy_version,
+        outcome=outcome,  # type: ignore[arg-type]
+        basis=AuditBasis(controlling=[code]),
+        escalation_id=record.escalation_id,
+        reviewer_decision=dict(decision),
     )

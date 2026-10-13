@@ -41,6 +41,10 @@ class FileMandateResolver(MandateResolver):
         self._revoked = {*data.get("revoked", []), *revoked}
         self.max_depth = max_depth
 
+    def exists(self, mandate_ref: str) -> bool:
+        """True if the reference is known (validity is checked in ``resolve``)."""
+        return mandate_ref in self._mandates
+
     def resolve(self, mandate_ref: str, agent_id: str, at: datetime) -> Mandate:
         """Return the mandate if valid for ``agent_id`` at ``at``; else raise ``MandateRejection``."""
         m = self._mandates.get(mandate_ref)

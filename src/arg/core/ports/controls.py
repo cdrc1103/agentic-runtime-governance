@@ -39,6 +39,10 @@ class MandateResolver(ABC):
     """
 
     @abstractmethod
+    def exists(self, mandate_ref: str) -> bool:
+        """True if the reference names a known mandate (coherence check, SG-08)."""
+
+    @abstractmethod
     def resolve(self, mandate_ref: str, agent_id: str, at: datetime) -> Mandate:
         """Return the validated mandate or raise ``MandateRejection``."""
 

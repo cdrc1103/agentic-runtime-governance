@@ -8,6 +8,7 @@ import pytest
 from arg.core.factory import ComponentFactory
 from arg.core.ports import AuditStore, PipelineStage, StateStore
 from arg.core.registry import ComponentRegistry, register, registry_for
+from arg.core.state.memory import InMemoryStateStore
 from arg.runtime import ROLES, build_runtime, load_config
 
 
@@ -64,19 +65,8 @@ def test_build_runtime_wires_components_and_injects_dependencies() -> None:
     """Roles are built in order; later components receive earlier ones by role name."""
 
     @register(StateStore, "t-state")
-    class FakeState(StateStore):
-        """Test double."""
-
-        def reserve(self, key: str, amount: float, limit: float, window_s: int) -> bool:
-            """Always succeed."""
-            return True
-
-        def release(self, key: str, amount: float, window_s: int) -> None:
-            """No-op."""
-
-        def consume_token(self, jti: str) -> bool:
-            """Always succeed."""
-            return True
+    class FakeState(InMemoryStateStore):
+        """Test double: the in-memory store registered under another name."""
 
     @register(PipelineStage, "t-stage")
     class FakeStage(PipelineStage):

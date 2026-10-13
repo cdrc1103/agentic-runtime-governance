@@ -95,7 +95,15 @@ class ConfigRiskCalibrator(RiskCalibrator):
             indicated,
             self.calibration.escalation,
             tuple(codes),
+            self._amount(cal, context),
         )
+
+    @staticmethod
+    def _amount(cal: ActionCalibration, context: EvaluationContext) -> float | None:
+        value = context.envelope.action.parameters.get(cal.materiality_parameter or "")
+        if isinstance(value, bool) or not isinstance(value, int | float):
+            return None
+        return float(value)
 
     @staticmethod
     def _materiality(cal: ActionCalibration, context: EvaluationContext, codes: list[str]) -> Level:

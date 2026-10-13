@@ -16,4 +16,6 @@ class IdentityStage(PipelineStage):
 
     def run(self, state: dict[str, Any]) -> dict[str, Any]:
         """Add ``state["identity"]``; raise ``IdentityRejection`` on failure."""
+        if "identity" in state:  # internal reviewer re-entry carries a verified binding
+            return state
         return {**state, "identity": self.verifier.verify(state["envelope"])}

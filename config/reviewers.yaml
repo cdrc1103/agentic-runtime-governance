@@ -1,0 +1,5 @@
+# Fictional reviewers of Example Bank (ESC-04). authority_limit null = unlimited.
+reviewers:
+  - {reviewer_id: rita.reviewer, roles: [treasury-reviewer], authority_limit: 50000}
+  - {reviewer_id: sam.senior, roles: [treasury-reviewer, treasury-senior], authority_limit: 1000000, senior: true}
+  - {reviewer_id: ivan.intern, roles: [treasury-reviewer], authority_limit: 100}
