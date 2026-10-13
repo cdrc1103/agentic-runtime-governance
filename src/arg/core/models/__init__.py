@@ -1,5 +1,17 @@
 """Pydantic data contracts (``docs/spec/contracts.md``)."""
 
+from arg.core.models.audit import (
+    GENESIS_HASH,
+    Anchor,
+    AuditBasis,
+    AuditConflict,
+    AuditContent,
+    AuditEntry,
+    AuditObservation,
+    IdentityResult,
+    RuleApplication,
+    VerifyResult,
+)
 from arg.core.models.controls import (
     AppliesTo,
     Control,
@@ -46,6 +58,16 @@ from arg.core.models.identity import (
 )
 
 __all__ = [
+    "GENESIS_HASH",
+    "Anchor",
+    "AuditBasis",
+    "AuditConflict",
+    "AuditContent",
+    "AuditEntry",
+    "AuditObservation",
+    "IdentityResult",
+    "RuleApplication",
+    "VerifyResult",
     "ActionCalibration",
     "Calibration",
     "Disposition",

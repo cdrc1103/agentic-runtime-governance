@@ -57,7 +57,20 @@ class DispositionEngine:
 
         by_id = {c.control_id: c for c in controls}
         fired = [f for f in findings if f.result == "fire"]
-        reasons = [f.reason_code for f in fired] + list(profile.reason_codes)
+        outcome_of = {
+            Effect.DENY: Outcome.DENY,
+            Effect.ESCALATE: Outcome.ESCALATE,
+            Effect.OBSERVE: Outcome.OBSERVE,
+        }
+        controlling = [f.reason_code for f in fired if f.effect and outcome_of[f.effect] is outcome]
+        contributing = [
+            f.reason_code for f in fired if f.effect and outcome_of[f.effect] is not outcome
+        ]
+        if profile.indicated_outcome is outcome and outcome is not Outcome.AUTO_EXECUTE:
+            controlling += list(profile.reason_codes)
+        else:
+            contributing += list(profile.reason_codes)
+        reasons = controlling + contributing
         escalation = None
         if outcome is Outcome.ESCALATE:
             routed = next(
@@ -83,4 +96,6 @@ class DispositionEngine:
             profile,
             observations,
             escalation,
+            tuple(dict.fromkeys(controlling)),
+            tuple(c for c in dict.fromkeys(contributing) if c not in controlling),
         )

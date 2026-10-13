@@ -139,6 +139,10 @@ class Disposition:
     risk_profile: RiskProfile
     observations: tuple[Observation, ...] = ()
     escalation: Escalation | None = None
+    # ``reason_codes`` = controlling + contributing. Controlling reasons are those that
+    # produced the final outcome; contributing ones fired but a stricter rule decided.
+    controlling_codes: tuple[str, ...] = ()
+    contributing_codes: tuple[str, ...] = ()
 
     def rules_applied(self) -> Sequence[Finding]:
         """Findings in evaluation order (audit ``rules_applied``)."""

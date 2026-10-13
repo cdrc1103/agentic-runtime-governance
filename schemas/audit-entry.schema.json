@@ -1,0 +1,395 @@
+{
+  "$defs": {
+    "AuditBasis": {
+      "additionalProperties": false,
+      "description": "Why the outcome is what it is (AUD-03). Controlling reasons decided it.",
+      "properties": {
+        "contributing": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contributing",
+          "type": "array"
+        },
+        "controlling": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Controlling",
+          "type": "array"
+        }
+      },
+      "title": "AuditBasis",
+      "type": "object"
+    },
+    "AuditObservation": {
+      "additionalProperties": false,
+      "description": "Structured observation (SG-05).",
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "details": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Details",
+          "type": "object"
+        },
+        "severity": {
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity"
+      ],
+      "title": "AuditObservation",
+      "type": "object"
+    },
+    "IdentityResult": {
+      "additionalProperties": false,
+      "description": "Outcome of the identity stage (IDN-05).",
+      "properties": {
+        "agent_class": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agent Class"
+        },
+        "agent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agent Id"
+        },
+        "code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Code"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "network_context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Network Context"
+        },
+        "origin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Origin"
+        },
+        "principal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Principal"
+        },
+        "registry_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Registry Id"
+        },
+        "status": {
+          "enum": [
+            "confirmed",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "IdentityResult",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "RuleApplication": {
+      "additionalProperties": false,
+      "description": "One control evaluation (AUD-03: the specific rules applied).",
+      "properties": {
+        "control_id": {
+          "title": "Control Id",
+          "type": "string"
+        },
+        "effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effect"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Inputs",
+          "type": "object"
+        },
+        "reason_code": {
+          "default": "",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fire"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "control_id",
+        "version",
+        "result"
+      ],
+      "title": "RuleApplication",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A persisted entry in an agent's hash chain (AUD-02, AUD-06).",
+  "properties": {
+    "agent_stream": {
+      "minLength": 1,
+      "title": "Agent Stream",
+      "type": "string"
+    },
+    "basis": {
+      "$ref": "#/$defs/AuditBasis"
+    },
+    "decided_at_stage": {
+      "enum": [
+        "validation",
+        "identity",
+        "mandate",
+        "engine",
+        "reviewer"
+      ],
+      "title": "Decided At Stage",
+      "type": "string"
+    },
+    "entry_hash": {
+      "title": "Entry Hash",
+      "type": "string"
+    },
+    "entry_id": {
+      "title": "Entry Id",
+      "type": "string"
+    },
+    "envelope": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Envelope",
+      "type": "object"
+    },
+    "escalation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Escalation Id"
+    },
+    "identity_result": {
+      "$ref": "#/$defs/IdentityResult"
+    },
+    "mandate_snapshot": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mandate Snapshot"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/AuditObservation"
+      },
+      "title": "Observations",
+      "type": "array"
+    },
+    "outcome": {
+      "enum": [
+        "deny",
+        "escalate",
+        "observe",
+        "auto_execute"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "policy_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Version"
+    },
+    "prev_hash": {
+      "title": "Prev Hash",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "reviewer_decision": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewer Decision"
+    },
+    "rules_applied": {
+      "items": {
+        "$ref": "#/$defs/RuleApplication"
+      },
+      "title": "Rules Applied",
+      "type": "array"
+    },
+    "seq": {
+      "minimum": 1,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "stage_timings_ms": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Stage Timings Ms",
+      "type": "object"
+    },
+    "state_snapshot": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "State Snapshot",
+      "type": "object"
+    },
+    "token_jti": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Token Jti"
+    }
+  },
+  "required": [
+    "agent_stream",
+    "recorded_at",
+    "decided_at_stage",
+    "envelope",
+    "identity_result",
+    "outcome",
+    "entry_id",
+    "seq",
+    "prev_hash",
+    "entry_hash"
+  ],
+  "title": "AuditEntry",
+  "type": "object"
+}

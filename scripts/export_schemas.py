@@ -9,10 +9,15 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from arg.core.models import Control, Envelope, Mandate
+from arg.core.models import AuditEntry, Control, Envelope, Mandate
 
 OUT = Path(__file__).parent.parent / "schemas"
-MODELS: dict[str, type[BaseModel]] = {"envelope": Envelope, "control": Control, "mandate": Mandate}
+MODELS: dict[str, type[BaseModel]] = {
+    "envelope": Envelope,
+    "control": Control,
+    "mandate": Mandate,
+    "audit-entry": AuditEntry,
+}
 
 
 def render() -> dict[str, str]:

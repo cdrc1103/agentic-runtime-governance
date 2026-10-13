@@ -3,6 +3,9 @@
 Only the composition root (``arg.runtime``) and test scaffolding import this module.
 """
 
+import arg.core.audit.anchor  # noqa: F401
+import arg.core.audit.memory  # noqa: F401
+import arg.core.audit.sqlite  # noqa: F401
 import arg.core.controls  # noqa: F401
 import arg.core.engine  # noqa: F401
 import arg.core.engine.rego  # noqa: F401

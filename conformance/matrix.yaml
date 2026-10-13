@@ -1,3 +1,29 @@
+AUD-01:
+- tests/core/test_audit.py::test_every_outcome_and_rejection_is_recorded_with_required_fields
+AUD-02:
+- tests/contracts/test_audit_store_contract.py::test_entries_chain_from_genesis_and_verify[memory]
+- tests/contracts/test_audit_store_contract.py::test_entries_chain_from_genesis_and_verify[sqlite]
+- tests/contracts/test_audit_store_contract.py::test_stale_expected_head_is_refused[memory]
+- tests/contracts/test_audit_store_contract.py::test_stale_expected_head_is_refused[sqlite]
+- tests/core/test_audit.py::test_memory_tampering_detected
+- tests/core/test_audit.py::test_sqlite_deleted_row_detected
+- tests/core/test_audit.py::test_sqlite_modified_row_detected
+- tests/core/test_audit.py::test_sqlite_reordered_rows_detected
+- tests/core/test_audit.py::test_triggers_block_update_and_delete
+AUD-03:
+- tests/core/test_audit.py::test_every_outcome_and_rejection_is_recorded_with_required_fields
+AUD-04:
+- tests/core/test_audit.py::test_decision_reconstructs_from_the_entry_alone
+AUD-05:
+- tests/core/test_audit.py::test_jsonl_export_roundtrip_and_offline_verify
+AUD-06:
+- tests/contracts/test_audit_store_contract.py::test_entries_chain_from_genesis_and_verify[memory]
+- tests/contracts/test_audit_store_contract.py::test_entries_chain_from_genesis_and_verify[sqlite]
+- tests/core/test_audit.py::test_jsonl_export_roundtrip_and_offline_verify
+- tests/core/test_audit.py::test_sqlite_deleted_row_detected
+- tests/core/test_audit.py::test_sqlite_modified_row_detected
+- tests/core/test_audit.py::test_sqlite_reordered_rows_detected
+- tests/core/test_audit.py::test_truncated_tail_needs_anchor
 CTL-01:
 - tests/core/test_controls.py::test_repository_selects_by_action_class_and_validity
 - tests/core/test_controls.py::test_sample_bundle_loads_with_categories_and_kinds
@@ -44,6 +70,7 @@ DSP-05:
 DSP-06:
 - tests/core/test_engine.py::test_precedence_deny_over_escalate_over_observe_over_auto
 DSP-07:
+- tests/core/test_audit.py::test_decision_reconstructs_from_the_entry_alone
 - tests/core/test_engine.py::test_engine_is_deterministic
 ENV-02:
 - tests/core/test_envelope_models.py::test_envelope_carries_action_trace_and_context
