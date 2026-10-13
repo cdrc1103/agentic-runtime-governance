@@ -1,0 +1,343 @@
+{
+  "$defs": {
+    "Action": {
+      "additionalProperties": false,
+      "description": "The proposed action: type, scope, parameters.",
+      "properties": {
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "parent_envelope_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Envelope Id"
+        },
+        "scope": {
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "type": {
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "scope"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionTrace": {
+      "additionalProperties": false,
+      "description": "Steps executed, tool calls, data retrieved, checks performed.",
+      "properties": {
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/TraceStep"
+          },
+          "title": "Steps",
+          "type": "array"
+        }
+      },
+      "title": "ActionTrace",
+      "type": "object"
+    },
+    "Context": {
+      "additionalProperties": false,
+      "description": "Context metadata: identity, mandate, system state, constraints, signals.",
+      "properties": {
+        "agent_id": {
+          "minLength": 1,
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "mandate_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Ref"
+        },
+        "network_context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Network Context"
+        },
+        "policy_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Policy Constraints",
+          "type": "array"
+        },
+        "signals": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Signals",
+          "type": "object"
+        },
+        "step_index": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Step Index",
+          "type": "integer"
+        },
+        "system_state": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "System State",
+          "type": "object"
+        },
+        "workflow_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workflow Id"
+        }
+      },
+      "required": [
+        "agent_id"
+      ],
+      "title": "Context",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "ObservedCall": {
+      "additionalProperties": false,
+      "description": "The call a gateway actually observed (gateway origin).",
+      "properties": {
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "params_hash": {
+          "title": "Params Hash",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "target",
+        "params_hash"
+      ],
+      "title": "ObservedCall",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Where the envelope came from and how it can be authenticated (ENV-04).",
+      "properties": {
+        "adapter_id": {
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "observed_call": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObservedCall"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "origin": {
+          "enum": [
+            "native",
+            "gateway"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "signature": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signature"
+        }
+      },
+      "required": [
+        "origin",
+        "adapter_id"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "TraceStep": {
+      "additionalProperties": false,
+      "description": "One executed step: tool call, retrieval, check, or model call.",
+      "properties": {
+        "ended_at": {
+          "format": "date-time",
+          "title": "Ended At",
+          "type": "string"
+        },
+        "input_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Hash"
+        },
+        "kind": {
+          "enum": [
+            "tool_call",
+            "retrieval",
+            "check",
+            "model_call"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "otel_span_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Otel Span Id"
+        },
+        "output_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Hash"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "step_id": {
+          "minLength": 1,
+          "title": "Step Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "kind",
+        "name",
+        "started_at",
+        "ended_at"
+      ],
+      "title": "TraceStep",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A proposed agent action packaged for governance before execution (ENV-01).",
+  "properties": {
+    "action": {
+      "$ref": "#/$defs/Action"
+    },
+    "action_trace": {
+      "$ref": "#/$defs/ActionTrace"
+    },
+    "context": {
+      "$ref": "#/$defs/Context"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "envelope_id": {
+      "minLength": 1,
+      "title": "Envelope Id",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "envelope_id",
+    "created_at",
+    "action",
+    "context",
+    "provenance"
+  ],
+  "title": "Envelope",
+  "type": "object"
+}

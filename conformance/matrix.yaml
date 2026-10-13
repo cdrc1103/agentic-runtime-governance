@@ -1,1 +1,15 @@
-{}
+ENV-02:
+- tests/core/test_envelope_models.py::test_envelope_carries_action_trace_and_context
+ENV-03:
+- tests/core/test_validation.py::test_coherence_failures
+- tests/core/test_validation.py::test_completeness_failures
+- tests/core/test_validation.py::test_valid_envelope_passes
+ENV-04:
+- tests/core/test_crypto.py::test_signed_envelope_verifies_and_tampering_is_detected
+- tests/core/test_validation.py::test_gateway_observed_call_must_match_declared_parameters
+ENV-05:
+- tests/core/test_envelope_models.py::test_canonicalisation_matches_rfc8785_sample
+- tests/core/test_envelope_models.py::test_hash_deterministic_under_reordering
+- tests/core/test_envelope_models.py::test_hash_is_independent_of_key_order_and_stable
+- tests/core/test_envelope_models.py::test_integers_beyond_safe_range_are_refused
+- tests/core/test_envelope_models.py::test_schema_version_is_declared

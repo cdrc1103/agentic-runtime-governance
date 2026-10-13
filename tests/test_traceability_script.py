@@ -1,10 +1,6 @@
 """Traceability checker: unknown IDs always fail; untested [PAPER] IDs fail in strict mode."""
 
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-from check_traceability import check, requirements  # noqa: E402
+from scripts.check_traceability import check, requirements
 
 TABLE = "| ENV-01 | PAPER | x | y |\n| ENV-05 | DESIGN | x | n/a |\n"
 

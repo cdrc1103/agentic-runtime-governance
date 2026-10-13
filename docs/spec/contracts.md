@@ -41,3 +41,11 @@
 Service-to-service auth for the API is an open decision (section 11); v1 uses a shared bearer behind an interface.
 
 ---
+
+## Implementation notes (Phase 1)
+
+- Hashing: RFC 8785 canonical JSON via the `rfc8785` library, then SHA-256 (ENV-05). Integers outside ±(2^53−1) are refused rather than rounded; carry large monetary amounts as strings.
+- All timestamps are timezone-aware; naive datetimes are rejected.
+- `provenance.signature` signs the canonical envelope with the signature field nulled (`arg.core.crypto.signing_payload`).
+- Validation reason codes are `ENV_*` (`arg.core.validation`); completeness rules per action type are configuration (`ActionRequirements`).
+- Schemas are exported to `schemas/` by `scripts/export_schemas.py`; a test fails on drift.
