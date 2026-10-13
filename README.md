@@ -15,8 +15,8 @@ human escalation, and two integration patterns (native, gateway).
 
 Phases 0-6 done: spec docs and ADRs, envelope/identity/controls/mandates, disposition engine
 (with optional Rego), audit log, state store, decision service, escalation, HTTP API with
-bearer auth and OpenTelemetry. Pending: decision tokens, native/gateway adapters, conformance
-suite, packaging; see `docs/plan/phases.md`. Try `uv run python demo/engine_demo.py`.
+bearer auth and OpenTelemetry. Decision tokens and the adapter docking point are done (no framework-specific adapters;
+see `docs/adapters/README.md`). Pending: gateways, conformance suite, packaging; see `docs/plan/phases.md`. Try `uv run python demo/engine_demo.py`.
 
 ## Layout
 

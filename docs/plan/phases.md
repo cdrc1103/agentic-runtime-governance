@@ -70,6 +70,11 @@ Order matters; no schedule is implied. **Per-component rule (constitution 14):**
 - T-703 Tests: replay, expiry, wrong agent, action-hash mismatch, tampered signature.
 
 ### Phase 8: Native adapters (INT-01, INT-06)
+
+> **Scope change (owner, 2026-10-14):** no framework-specific adapters are implemented. The
+> docking point (`arg.adapters`), the generic wrapper, trace capture, and the OTel GenAI mapping
+> are built and tested against a fake framework. See `docs/adapters/README.md` for the
+> transparent status and the docking guide.
 - T-800 Core client with two modes: embedded (in-process, no network hop) and HTTP.
 - T-801 Generic `governed_tool` decorator/wrapper.
 - For each framework below: **first** read the official documentation for the exact interception API at a pinned version and write `docs/adapters/<framework>.md` (hook name, signature, version, limits, how outcomes map). **Then** implement and test with a fake runtime, plus one real-framework integration test behind an extras marker.

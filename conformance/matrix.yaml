@@ -197,6 +197,12 @@ IDN-05:
 - tests/service/test_decision_service.py::test_s05_unregistered_and_suspended_rejected_at_identity_and_logged[sqlite]
 IDN-06:
 - tests/core/test_identity.py::test_registered_active_agent_gets_binding
+INT-01:
+- tests/adapters/test_docking.py::test_blocked_and_pending_actions_never_execute
+- tests/adapters/test_docking.py::test_decision_arrives_before_the_agent_acts
+- tests/adapters/test_docking.py::test_governed_tool_sync
+INT-03:
+- tests/adapters/test_docking.py::test_governance_sits_between_guardrail_and_rail_and_replaces_neither
 INT-04:
 - tests/contracts/test_state_store_contract.py::test_token_consumed_once[memory]
 - tests/contracts/test_state_store_contract.py::test_token_consumed_once[sqlite]
@@ -211,8 +217,13 @@ INT-04:
 - tests/service/test_token_flow.py::test_reviewer_approval_issues_a_token_bound_to_the_held_action
 - tests/service/test_token_flow.py::test_tokens_only_for_proceeding_outcomes_and_recorded_in_audit
 INT-05:
+- tests/adapters/test_docking.py::test_blocked_and_pending_actions_never_execute
+- tests/adapters/test_docking.py::test_unreachable_core_fails_closed
 - tests/service/test_api.py::test_decision_roundtrip_and_malformed_bodies_are_decided_not_crashed
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[memory]
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[sqlite]
 - tests/service/test_decision_service.py::test_s16_internal_error_fails_closed_and_is_audited[memory]
 - tests/service/test_decision_service.py::test_s16_internal_error_fails_closed_and_is_audited[sqlite]
+INT-06:
+- tests/adapters/test_docking.py::test_governed_tool_sync
+- tests/adapters/test_docking.py::test_otel_genai_span_mapping
