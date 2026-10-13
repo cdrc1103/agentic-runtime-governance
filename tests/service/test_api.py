@@ -234,11 +234,14 @@ def test_sample_runtime_yaml_builds_the_service() -> None:
     """The shipped config composes a working service (keys come from the environment)."""
     import os
 
+    from arg.core import crypto
     from arg.runtime import build_runtime, load_config
 
     os.environ["ARG_TOKENS"] = json.dumps(TOKENS)
+    os.environ["ARG_TOKEN_KEY"] = crypto.private_key_pem(crypto.generate_private_key()).decode()
     rt = build_runtime(load_config(Path("config/runtime.yaml")))
     assert rt.decision_service is not None and "authenticator" in rt.components
+    assert "token_service" in rt.components
     app = create_app(rt, rt.components["authenticator"])
     assert TestClient(app).get("/healthz").status_code == 200
-    del os.environ["ARG_TOKENS"]
+    del os.environ["ARG_TOKENS"], os.environ["ARG_TOKEN_KEY"]

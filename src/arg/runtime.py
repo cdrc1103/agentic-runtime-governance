@@ -112,6 +112,7 @@ def build_runtime(config: Mapping[str, Any]) -> GovernanceRuntime:
             runtime.components["audit_store"],
             runtime.components["escalation_queue"],
             runtime.components["controls_repository"],
+            token_service=runtime.components.get("token_service"),
             **service_cfg,
         )
     return runtime

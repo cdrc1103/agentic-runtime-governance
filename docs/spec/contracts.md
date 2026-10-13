@@ -49,3 +49,17 @@ Service-to-service auth for the API is an open decision (section 11); v1 uses a 
 - `provenance.signature` signs the canonical envelope with the signature field nulled (`arg.core.crypto.signing_payload`).
 - Validation reason codes are `ENV_*` (`arg.core.validation`); completeness rules per action type are configuration (`ActionRequirements`).
 - Schemas are exported to `schemas/` by `scripts/export_schemas.py`; a test fails on drift.
+
+## Implementation notes (Phase 7)
+
+- Decision tokens are compact JWS (RFC 7515) with `alg: EdDSA` (RFC 8037), implemented in
+  `arg.core.tokens.jws` without a JWT library. Header `{"alg","typ":"arg-decision+jwt"[,"kid"]}`;
+  header and payload are RFC 8785 canonical JSON. Verification refuses any other `alg`
+  (including `none`), unknown or `crit` header parameters, non-canonical base64url, and
+  payloads that do not match the claim schema.
+- `act_hash = SHA-256(JCS({type, scope, parameters}))` of the action (`parent_envelope_id` is
+  excluded because a gateway cannot know it).
+- Redemption verifies first, then atomically consumes `jti` (`TokenService.redeem`), so a
+  token presented with the wrong action is not burned.
+- Tokens are issued for Auto-Execute, Observe, and reviewer approval; the `jti` is recorded in
+  the audit entry. Time-based checks use the service clock (`at`), never the token's own.

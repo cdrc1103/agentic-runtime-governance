@@ -17,9 +17,10 @@ from arg.core.models import (
     DecisionResponse,
     EscalationError,
     EscalationRecord,
+    TokenError,
     VerifyResult,
 )
-from arg.core.ports import AnchorSink, AuditStore
+from arg.core.ports import AnchorSink, AuditStore, TokenService
 from arg.runtime import GovernanceRuntime
 from arg.service.auth import Authenticator
 
@@ -50,6 +51,16 @@ class ResolutionRequest(BaseModel):
     note: str = ""
 
 
+class ConsumeRequest(BaseModel):
+    """A gateway or rail presents a token with the action it is about to execute."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    token: str
+    act_hash: str
+    agent_id: str
+
+
 class EscalationSummary(BaseModel):
     """What a submitter may see about an escalation."""
 
@@ -65,6 +76,7 @@ class ResolutionResponse(BaseModel):
 
     escalation: EscalationRecord
     child: DecisionResponse | None = None
+    token: str | None = None
 
 
 def create_app(runtime: GovernanceRuntime, authenticator: Authenticator) -> FastAPI:
@@ -74,6 +86,7 @@ def create_app(runtime: GovernanceRuntime, authenticator: Authenticator) -> Fast
         raise ValueError("runtime has no decision service (pipeline or stores missing)")
     audit: AuditStore = runtime.components["audit_store"]
     sink: AnchorSink | None = runtime.components.get("anchor_sink")
+    tokens: TokenService | None = runtime.components.get("token_service")
     app = FastAPI(title="agentic-runtime-governance", version="0.1.0")
 
     def principal(authorization: Annotated[str | None, Header()] = None) -> Principal:
@@ -142,7 +155,28 @@ def create_app(runtime: GovernanceRuntime, authenticator: Authenticator) -> Fast
             raise HTTPException(
                 _HTTP_STATUS.get(exc.code, 400), {"code": exc.code, "detail": exc.detail}
             ) from exc
-        return ResolutionResponse(escalation=result.escalation, child=result.child)
+        return ResolutionResponse(
+            escalation=result.escalation, child=result.child, token=result.token
+        )
+
+    @app.post("/v1/tokens/consume")
+    def consume(
+        body: ConsumeRequest, _: Annotated[Principal, Depends(require_role("consume"))]
+    ) -> dict[str, Any]:
+        if tokens is None:
+            raise HTTPException(404, "no token service configured")
+        try:
+            claims = tokens.redeem(
+                body.token,
+                act_hash=body.act_hash,
+                agent_id=body.agent_id,
+                at=service.clock(),
+                state_store=runtime.components["state_store"],
+            )
+        except TokenError as exc:
+            status = 409 if exc.code == "TOK_REPLAYED" else 403
+            raise HTTPException(status, {"code": exc.code, "detail": exc.detail}) from exc
+        return claims.model_dump()
 
     @app.post("/v1/escalations/sweep")
     def sweep(_: Annotated[Principal, Depends(require_role("admin"))]) -> list[dict[str, str]]:

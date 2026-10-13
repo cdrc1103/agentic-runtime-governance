@@ -143,6 +143,7 @@ ENV-06:
 - tests/contracts/test_state_store_contract.py::test_first_decision_wins[sqlite]
 - tests/service/test_decision_service.py::test_s23_duplicate_envelope_returns_original_without_second_reservation[memory]
 - tests/service/test_decision_service.py::test_s23_duplicate_envelope_returns_original_without_second_reservation[sqlite]
+- tests/service/test_token_flow.py::test_duplicate_submission_returns_the_same_token
 ESC-01:
 - tests/service/test_api.py::test_escalation_flow_over_http
 - tests/service/test_decision_service.py::test_s02_escalation_holds_action[memory]
@@ -199,6 +200,16 @@ IDN-06:
 INT-04:
 - tests/contracts/test_state_store_contract.py::test_token_consumed_once[memory]
 - tests/contracts/test_state_store_contract.py::test_token_consumed_once[sqlite]
+- tests/core/test_tokens.py::test_expiry_boundaries
+- tests/core/test_tokens.py::test_s11_replay_refused_and_failed_verification_does_not_burn_token
+- tests/core/test_tokens.py::test_tampering_and_foreign_keys_refused
+- tests/core/test_tokens.py::test_valid_token_claims
+- tests/core/test_tokens.py::test_wrong_agent_and_altered_action_refused
+- tests/service/test_token_flow.py::test_consume_endpoint_s11_s12
+- tests/service/test_token_flow.py::test_duplicate_submission_returns_the_same_token
+- tests/service/test_token_flow.py::test_expired_token_refused_at_consume
+- tests/service/test_token_flow.py::test_reviewer_approval_issues_a_token_bound_to_the_held_action
+- tests/service/test_token_flow.py::test_tokens_only_for_proceeding_outcomes_and_recorded_in_audit
 INT-05:
 - tests/service/test_api.py::test_decision_roundtrip_and_malformed_bodies_are_decided_not_crashed
 - tests/service/test_decision_service.py::test_audit_failure_releases_reservation_and_denies[memory]

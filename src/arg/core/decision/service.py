@@ -19,6 +19,7 @@ from arg.core.audit.builder import (
 )
 from arg.core.decision.observer import DecisionObserver, NullObserver
 from arg.core.models import (
+    Action,
     AuditConflict,
     AuditContent,
     AuditEntry,
@@ -28,6 +29,7 @@ from arg.core.models import (
     EscalationState,
     IdentityBinding,
     IdentityRejection,
+    IssuedToken,
     MandateRejection,
     Outcome,
     Reservation,
@@ -39,7 +41,11 @@ from arg.core.ports import (
     EscalationQueue,
     PipelineStage,
     StateStore,
+    TokenService,
 )
+from arg.core.tokens.service import action_hash
+
+_PROCEEDS = (Outcome.AUTO_EXECUTE, Outcome.OBSERVE)
 
 
 @dataclass(frozen=True)
@@ -48,6 +54,7 @@ class ResolutionResult:
 
     escalation: EscalationRecord
     child: DecisionResponse | None = None
+    token: str | None = None
 
 
 def system_clock() -> datetime:
@@ -68,6 +75,7 @@ class DecisionService:
         clock: Callable[[], datetime] = system_clock,
         amount_parameter: str = "amount",
         observer: DecisionObserver | None = None,
+        token_service: TokenService | None = None,
     ) -> None:
         """Inject the ordered stages and stores (wired by the composition root)."""
         self.stages = list(stages)
@@ -78,6 +86,7 @@ class DecisionService:
         self.clock = clock
         self.amount_parameter = amount_parameter
         self.observer: DecisionObserver = observer or NullObserver()
+        self.tokens = token_service
 
     # ---- decide ---------------------------------------------------------------------
     def decide(
@@ -176,19 +185,39 @@ class DecisionService:
             else:
                 escalation_id = record.escalation_id
                 self.observer.queue_depth(record.queue, self.queue.depth(record.queue))
-        content = content_from_disposition(
-            env,
-            identity,
-            disposition,
-            recorded_at=now,
-            policy_version=self.repo.policy_version,
-            mandate=state.get("mandate"),
-            state_snapshot=state["snapshot"],
-            stage_timings_ms=timings,
-            escalation_id=escalation_id,
-        )
+        issued: list[IssuedToken] = []
+
+        def make(decision_id: str) -> AuditContent:
+            """Build the entry; the token (if any) is bound to the id it will receive."""
+            issued.clear()
+            jti: str | None = None
+            if self.tokens is not None and disposition.outcome in _PROCEEDS:
+                issued.append(
+                    self.tokens.issue(
+                        subject=identity.agent_id,
+                        decision_id=decision_id,
+                        outcome=disposition.outcome.value,
+                        act_hash=action_hash(env.action),
+                        policy_version=self.repo.policy_version,
+                        at=now,
+                    )
+                )
+                jti = issued[0].claims.jti
+            return content_from_disposition(
+                env,
+                identity,
+                disposition,
+                recorded_at=now,
+                policy_version=self.repo.policy_version,
+                mandate=state.get("mandate"),
+                state_snapshot=state["snapshot"],
+                stage_timings_ms=timings,
+                token_jti=jti,
+                escalation_id=escalation_id,
+            )
+
         try:
-            entry = self._append(content)
+            entry, content = self._append_with(env.context.agent_id, make)
         except Exception:
             self._undo(state.get("reserved", []), record, now)
             raise
@@ -198,7 +227,10 @@ class DecisionService:
                 EscalationState.PENDING,
                 record.model_copy(update={"decision_id": entry.entry_id}),
             )
-        return self._response(entry, content)
+        response = self._response(entry, content)
+        if issued:
+            response = response.model_copy(update={"token": issued[0].token})
+        return response
 
     def _reject(
         self,
@@ -240,6 +272,20 @@ class DecisionService:
                 reason_codes=["SYSTEM_ERROR"],
                 decided_at_stage="engine",
             )
+
+    def _append_with(
+        self, stream: str, make: Callable[[str], AuditContent]
+    ) -> tuple[AuditEntry, AuditContent]:
+        """Append content built for the id the entry will get; retry on head conflict."""
+        for attempt in range(3):
+            head = self.audit.head(stream)
+            content = make(f"{stream}#{head.seq + 1 if head else 1}")
+            try:
+                return self.audit.append(content, head.entry_hash if head else None), content
+            except AuditConflict:
+                if attempt == 2:
+                    raise
+        raise AssertionError("unreachable")  # pragma: no cover
 
     def _append(self, content: AuditContent) -> AuditEntry:
         for attempt in range(3):
@@ -321,10 +367,21 @@ class DecisionService:
                 )
             raise
         decision: dict[str, Any] = {"action": action, "reviewer_id": reviewer_id, "note": note}
+        issued_review: IssuedToken | None = None
         if action == "approve":
             for r in record.reservations:  # reviewer approval carries the institution's weight
                 self.state.reserve(r.key, r.amount, None, r.window_seconds, now)
             outcome, code = "auto_execute", "ESC_APPROVED"
+            if self.tokens is not None:
+                issued_review = self.tokens.issue(
+                    subject=str(record.identity["agent_id"]),
+                    decision_id=record.decision_id,
+                    outcome="auto_execute",
+                    act_hash=action_hash(Action.model_validate(record.envelope["action"])),
+                    policy_version=self.repo.policy_version,
+                    at=now,
+                )
+                decision["token_jti"] = issued_review.claims.jti
         elif action == "decline":
             outcome, code = "deny", "ESC_DECLINED"
         else:
@@ -338,13 +395,14 @@ class DecisionService:
                 decision,
                 recorded_at=now,
                 policy_version=self.repo.policy_version,
+                token_jti=issued_review.claims.jti if issued_review else None,
             )
         )
         self.observer.queue_depth(record.queue, self.queue.depth(record.queue))
         child: DecisionResponse | None = None
         if action == "modify":
             child = self._reenter(record, reviewer_id, dict(modified_parameters or {}), now)
-        return ResolutionResult(record, child)
+        return ResolutionResult(record, child, issued_review.token if issued_review else None)
 
     def _reenter(
         self, record: EscalationRecord, reviewer_id: str, parameters: dict[str, Any], now: datetime

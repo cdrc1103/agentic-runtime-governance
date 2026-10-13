@@ -14,3 +14,4 @@ import arg.core.escalation.queue  # noqa: F401
 import arg.core.identity  # noqa: F401
 import arg.core.state.memory  # noqa: F401
 import arg.core.state.sqlite  # noqa: F401
+import arg.core.tokens.service  # noqa: F401

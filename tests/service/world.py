@@ -93,6 +93,7 @@ def build_world(
     state: str = "memory",
     audit: str = "memory",
     controls_path: Path = BUNDLE,
+    tokens: bool = True,
 ) -> World:
     """Build a runtime with keys generated now; clock fixed at T0."""
     agent_key = crypto.generate_private_key()
@@ -212,6 +213,13 @@ def build_world(
             "reserve",
         ],
     }
+    if tokens:
+        (tmp / "token.pem").write_bytes(crypto.private_key_pem(crypto.generate_private_key()))
+        cfg["components"]["token_service"] = {
+            "type": "ed25519",
+            "private_key_path": str(tmp / "token.pem"),
+            "ttl_seconds": 300,
+        }
     rt = build_runtime(cfg)
     assert rt.decision_service is not None
     clock = Clock(T0)

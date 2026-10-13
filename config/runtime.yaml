@@ -1,5 +1,5 @@
 # Sample composition of the reference runtime (Example Bank, fictional).
-# `ARG_TOKENS` must hold JSON like {"<token>": {"principal": "rita.reviewer", "roles": ["review"]}}.
+# `ARG_TOKEN_KEY` holds an Ed25519 private key (PEM). `ARG_TOKENS` must hold JSON like {"<token>": {"principal": "rita.reviewer", "roles": ["review"]}}.
 components:
   state_store: {type: memory}
   audit_store: {type: memory}
@@ -13,6 +13,7 @@ components:
   resolution_policy: {type: precedence}
   escalation_queue: {type: state, reviewers_path: config/reviewers.yaml, max_open: 100}
   authenticator: {type: bearer, tokens_env: ARG_TOKENS}
+  token_service: {type: ed25519, private_key_env: ARG_TOKEN_KEY, issuer: example-bank-arg, ttl_seconds: 300}
 evaluators:
   authorisation: {type: authorisation}
   exposure: {type: exposure}

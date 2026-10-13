@@ -112,11 +112,14 @@ def test_authorised_reviewer_approval_carries_weight(w: World) -> None:
         "reviewer",
         esc_id,
     )
-    assert last.reviewer_decision == {
+    decision = dict(last.reviewer_decision or {})
+    assert decision.pop("token_jti") == last.token_jti and last.token_jti
+    assert decision == {
         "action": "approve",
         "reviewer_id": "rita.reviewer",
         "note": "verified by phone",
     }
+    assert res.token is not None
     assert refused(w, esc_id, "rita.reviewer", "decline") == "ESC_NOT_PENDING"
 
 

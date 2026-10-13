@@ -132,6 +132,7 @@ def content_for_reviewer(
     *,
     recorded_at: datetime,
     policy_version: str | None = None,
+    token_jti: str | None = None,
 ) -> AuditContent:
     """Audit content for a reviewer action, refusal, or timeout (ESC-04, ESC-05)."""
     ident = {k: v for k, v in record.identity.items() if k not in {"status", "code", "detail"}}
@@ -145,5 +146,6 @@ def content_for_reviewer(
         outcome=outcome,  # type: ignore[arg-type]
         basis=AuditBasis(controlling=[code]),
         escalation_id=record.escalation_id,
+        token_jti=token_jti,
         reviewer_decision=dict(decision),
     )

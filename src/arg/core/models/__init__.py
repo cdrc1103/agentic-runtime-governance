@@ -65,8 +65,12 @@ from arg.core.models.identity import (
     IdentityBinding,
     IdentityRejection,
 )
+from arg.core.models.tokens import IssuedToken, TokenClaims, TokenError
 
 __all__ = [
+    "IssuedToken",
+    "TokenClaims",
+    "TokenError",
     "DecisionResponse",
     "EscalationError",
     "EscalationRecord",
