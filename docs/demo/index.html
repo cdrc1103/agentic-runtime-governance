@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Runtime Governance: interactive demo</title>
+<style>
+:root{--bg:#f8fafc;--panel:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--idle:#cbd5e1;--accent:#0d9488}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1b2d;--panel:#16263c;--ink:#f1f5f9;--mute:#94a3b8;--line:#25374f;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--idle:#3b4f6b;--accent:#2dd4bf}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,"Segoe UI",Helvetica,Arial,sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.6rem;margin:0 0 4px}
+h2{font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:32px 0 10px}
+p.lead{color:var(--mute);margin:0 0 8px}
+.note{font-size:.85rem;color:var(--mute);border-left:3px solid var(--line);padding-left:10px;margin-top:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+button{font:inherit;color:inherit;cursor:pointer}
+.card{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.card:hover,.card[aria-pressed=true]{border-color:var(--accent)}
+.card[aria-pressed=true]{box-shadow:0 0 0 2px var(--accent)}
+.card b{display:block}.card span{color:var(--mute);font-size:.9rem}
+.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.node{flex:1 1 110px;text-align:center;padding:10px 6px;border-radius:8px;background:var(--idle);color:var(--ink);font-size:.9rem;transition:background .3s,opacity .3s;opacity:.55}
+.node.pass{background:var(--ok);color:#06220f;opacity:1}
+.node.stop{background:var(--bad);color:#fff;opacity:1}
+.node.skip{opacity:.35}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.badge{display:inline-block;padding:2px 12px;border-radius:999px;font-weight:700;color:#fff}
+.b-auto_execute{background:var(--ok);color:#06220f}.b-escalate{background:var(--warn);color:#2a1700}.b-deny{background:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+td,th{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+code{font:.85em ui-monospace,Menlo,Consolas,monospace}
+.fire{color:var(--bad);font-weight:700}.passr{color:var(--ok)}
+.actions{display:flex;flex-direction:column;gap:8px}
+.act{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.act:hover{border-color:var(--accent)}
+.res{margin-top:6px;font-size:.9rem;color:var(--mute)}
+.res b.good{color:var(--ok)}.res b.badr{color:var(--bad)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>Agentic Runtime Governance</h1>
+<p class="lead">Pick what an AI agent tries to do. Watch the governance pipeline decide, then act on the result.</p>
+<p class="note">Interactive replay of real runs of the reference engine over fictional data ("Example Bank"). This page re-implements no decision logic. Based on the SAFR reference model; SAFR is not regulatory guidance. Demo only.</p>
+
+<h2>1. What does the agent try?</h2>
+<div class="cards" id="cards"></div>
+
+<div id="run" class="hide">
+<h2>2. The pipeline decides</h2>
+<div class="pipe" id="pipe"></div>
+
+<h2>3. Verdict</h2>
+<div class="panel" id="verdict"></div>
+
+<div id="nextbox" class="hide">
+<h2>4. What happens next? Click to see.</h2>
+<div class="actions" id="next"></div>
+</div>
+</div>
+</main>
+<script>
+/*DATA_START*/
+const DATA = {
+ "scenarios": [
+  {
+   "id": "within",
+   "title": "Pay 500",
+   "blurb": "A routine payment inside every limit.",
+   "outcome": "auto_execute",
+   "reasons": [],
+   "stage": "engine",
+   "policy": "1cf3ca59de5e",
+   "controlling": [],
+   "rules": [
+    {
+     "id": "auth-treasury-payments",
+     "result": "pass",
+     "inputs": {
+      "action_type": "payment.initiate"
+     }
+    },
+    {
+     "id": "evidence-confidence-min",
+     "result": "pass",
+     "inputs": {
+      "value": 0.95
+     }
+    },
+    {
+     "id": "exposure-payment-aggregate",
+     "result": "pass",
+     "inputs": {
+      "used": 0.0,
+      "amount": 500.0,
+      "limit": 25000.0
+     }
+    },
+    {
+     "id": "exposure-payment-per-action",
+     "result": "pass",
+     "inputs": {
+      "amount": 500.0,
+      "limit": 10000.0
+     }
+    },
+    {
+     "id": "rate-payments",
+     "result": "pass",
+     "inputs": {
+      "count": 0.0,
+      "max_actions": 20
+     }
+    }
+   ],
+   "next": [
+    {
+     "label": "Rail redeems with the amount changed to 50,000",
+     "why": "action mismatch",
+     "status": 403,
+     "code": "TOK_ACTION_MISMATCH"
+    },
+    {
+     "label": "Rail redeems the exact action",
+     "why": "ok",
+     "status": 200,
+     "code": "ok"
+    },
+    {
+     "label": "Agent presents the same token again",
+     "why": "replay",
+     "status": 409,
+     "code": "TOK_REPLAYED"
+    }
+   ]
+  },
+  {
+   "id": "over",
+   "title": "Pay 20,000",
+   "blurb": "More than the per-action limit allows.",
+   "outcome": "escalate",
+   "reasons": [
+    "EXP_PER_ACTION_EXCEEDED",
+    "RISK_OBSERVE_THRESHOLD"
+   ],
+   "stage": "engine",
+   "policy": "1cf3ca59de5e",
+   "controlling": [
+    "EXP_PER_ACTION_EXCEEDED"
+   ],
+   "rules": [
+    {
+     "id": "auth-treasury-payments",
+     "result": "pass",
+     "inputs": {
+      "action_type": "payment.initiate"
+     }
+    },
+    {
+     "id": "evidence-confidence-min",
+     "result": "pass",
+     "inputs": {
+      "value": 0.95
+     }
+    },
+    {
+     "id": "exposure-payment-aggregate",
+     "result": "pass",
+     "inputs": {
+      "used": 0.0,
+      "amount": 20000.0,
+      "limit": 25000.0
+     }
+    },
+    {
+     "id": "exposure-payment-per-action",
+     "result": "fire",
+     "inputs": {
+      "amount": 20000.0,
+      "limit": 10000.0
+     }
+    },
+    {
+     "id": "rate-payments",
+     "result": "pass",
+     "inputs": {
+      "count": 0.0,
+      "max_actions": 20
+     }
+    }
+   ],
+   "next": [
+    {
+     "label": "Intern (limit 100) tries to approve",
+     "why": "authority",
+     "status": 403,
+     "code": "ESC_AUTHORITY_EXCEEDED"
+    },
+    {
+     "label": "Senior reviewer approves",
+     "why": "approved",
+     "status": 200,
+     "code": "APPROVED"
+    },
+    {
+     "label": "Rail redeems the approved token",
+     "why": "ok",
+     "status": 200,
+     "code": "ok"
+    },
+    {
+     "label": "Reviewer modifies the amount to 400",
+     "why": "modified",
+     "status": 200,
+     "code": "auto_execute"
+    },
+    {
+     "label": "Nobody reviews it in time",
+     "why": "timeout",
+     "status": 200,
+     "code": "TIMED_OUT"
+    }
+   ]
+  },
+  {
+   "id": "doubt",
+   "title": "Pay 10, model unsure",
+   "blurb": "Small amount, but the agent reports low confidence.",
+   "outcome": "escalate",
+   "reasons": [
+    "EVD_CONFIDENCE_BELOW"
+   ],
+   "stage": "engine",
+   "policy": "1cf3ca59de5e",
+   "controlling": [
+    "EVD_CONFIDENCE_BELOW"
+   ],
+   "rules": [
+    {
+     "id": "auth-treasury-payments",
+     "result": "pass",
+     "inputs": {
+      "action_type": "payment.initiate"
+     }
+    },
+    {
+     "id": "evidence-confidence-min",
+     "result": "fire",
+     "inputs": {
+      "value": 0.4,
+      "minimum": 0.8
+     }
+    },
+    {
+     "id": "exposure-payment-aggregate",
+     "result": "pass",
+     "inputs": {
+      "used": 0.0,
+      "amount": 10.0,
+      "limit": 25000.0
+     }
+    },
+    {
+     "id": "exposure-payment-per-action",
+     "result": "pass",
+     "inputs": {
+      "amount": 10.0,
+      "limit": 10000.0
+     }
+    },
+    {
+     "id": "rate-payments",
+     "result": "pass",
+     "inputs": {
+      "count": 0.0,
+      "max_actions": 20
+     }
+    }
+   ],
+   "next": []
+  },
+  {
+   "id": "expired",
+   "title": "Pay 500, expired mandate",
+   "blurb": "The agent's authority lapsed.",
+   "outcome": "deny",
+   "reasons": [
+    "MND_EXPIRED"
+   ],
+   "stage": "mandate",
+   "policy": "1cf3ca59de5e",
+   "controlling": [
+    "MND_EXPIRED"
+   ],
+   "rules": [],
+   "next": []
+  },
+  {
+   "id": "ghost",
+   "title": "Pay 500, unknown agent",
+   "blurb": "An agent nobody registered.",
+   "outcome": "deny",
+   "reasons": [
+    "IDN_AGENT_UNKNOWN"
+   ],
+   "stage": "identity",
+   "policy": "1cf3ca59de5e",
+   "controlling": [
+    "IDN_AGENT_UNKNOWN"
+   ],
+   "rules": [],
+   "next": []
+  },
+  {
+   "id": "forged",
+   "title": "Pay 500, wrong signing key",
+   "blurb": "Envelope signed with a key that is not the agent's.",
+   "outcome": "deny",
+   "reasons": [
+    "IDN_SIGNATURE_INVALID"
+   ],
+   "stage": "identity",
+   "policy": "1cf3ca59de5e",
+   "controlling": [
+    "IDN_SIGNATURE_INVALID"
+   ],
+   "rules": [],
+   "next": []
+  }
+ ]
+};
+/*DATA_END*/
+const STAGES=[["validate","Validate"],["identity","Identity"],["mandate","Mandate"],["engine","Controls"],["verdict","Verdict"],["audit","Audit log"]];
+const EXPLAIN={
+ EXP_PER_ACTION_EXCEEDED:"The amount is above the per-action limit.",
+ RISK_OBSERVE_THRESHOLD:"The risk score is high enough to be watched closely.",
+ EVD_CONFIDENCE_BELOW:"The agent reported less confidence than the policy requires.",
+ MND_EXPIRED:"The mandate that grants this agent authority has expired.",
+ IDN_AGENT_UNKNOWN:"No such agent is registered.",
+ IDN_SIGNATURE_INVALID:"The envelope was not signed with the agent's registered key.",
+ TOK_ACTION_MISMATCH:"The token was issued for a different action than the one presented.",
+ TOK_REPLAYED:"A one-time token was already used.",
+ ESC_AUTHORITY_EXCEEDED:"The reviewer's own authority limit is below this amount.",
+ ok:"Accepted.",APPROVED:"Approved. A one-time token is issued.",TIMED_OUT:"Unreviewed in time, so the default applies: blocked.",auto_execute:"Re-entered the full pipeline and passed on its own."
+};
+const OUT={auto_execute:"Auto-Execute",escalate:"Escalate",deny:"Deny"};
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+let timer=null;
+function renderCards(){
+ DATA.scenarios.forEach((s,i)=>{
+  const b=el("button","card");b.setAttribute("aria-pressed","false");
+  b.append(el("b",0,s.title),el("span",0,s.blurb));
+  b.onclick=()=>{document.querySelectorAll(".card").forEach(c=>c.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");play(s)};
+  $("cards").append(b);
+ });
+}
+function stageStates(s){
+ // identity/mandate rejections stop the pipeline there; everything else reaches the engine
+ const stopAt=s.stage==="identity"?1:s.stage==="mandate"?2:-1;
+ return STAGES.map((_,i)=>{
+  if(stopAt<0)return "pass";
+  if(i<stopAt)return "pass";
+  if(i===stopAt)return "stop";
+  return i===5?"pass":"skip";
+ });
+}
+function play(s){
+ clearTimeout(timer);
+ $("run").classList.remove("hide");$("nextbox").classList.add("hide");$("verdict").replaceChildren();
+ const pipe=$("pipe");pipe.replaceChildren();
+ const nodes=STAGES.map(([,l])=>{const n=el("div","node",l);pipe.append(n);return n});
+ const st=stageStates(s);let i=0;
+ (function step(){
+  if(i<nodes.length){nodes[i].classList.add(st[i]);i++;timer=setTimeout(step,260)}else showVerdict(s);
+ })();
+}
+function showVerdict(s){
+ const v=$("verdict");v.replaceChildren();
+ const head=el("div");
+ const b=el("span","badge b-"+s.outcome,OUT[s.outcome]||s.outcome);
+ head.append(b,el("span",0,"  decided at the "+s.stage+" stage, policy "+s.policy));
+ v.append(head);
+ if(s.reasons.length){
+  const ul=el("ul");
+  s.reasons.forEach(r=>{const li=el("li");li.append(el("code",0,r),document.createTextNode(" "+(EXPLAIN[r]||"")));ul.append(li)});
+  v.append(ul);
+ }else v.append(el("p",0,"No control objected. The action may proceed with a one-time token."));
+ if(s.rules.length){
+  const t=el("table");const hr=el("tr");["Control","Result","Inputs"].forEach(h=>hr.append(el("th",0,h)));t.append(hr);
+  s.rules.forEach(r=>{const tr=el("tr");
+   tr.append(el("td",0,r.id),el("td",r.result==="fire"?"fire":"passr",r.result));
+   const c=el("td");c.append(el("code",0,JSON.stringify(r.inputs)));tr.append(c);t.append(tr)});
+  v.append(t);
+ }
+ v.append(el("p","res","Written to the hash-chained audit log, whatever the outcome."));
+ const nx=$("next");nx.replaceChildren();
+ if(s.next.length){
+  s.next.forEach(a=>{
+   const w=el("div");const btn=el("button","act",a.label);const res=el("div","res hide");
+   const good=a.status===200;
+   const bold=el("b",good?"good":"badr",a.status+" "+a.code);
+   res.append(bold,document.createTextNode("  "+(EXPLAIN[a.code]||"")));
+   btn.onclick=()=>res.classList.toggle("hide");
+   w.append(btn,res);nx.append(w);
+  });
+  $("nextbox").classList.remove("hide");
+ }
+}
+renderCards();
+</script>
+</body>
+</html>
