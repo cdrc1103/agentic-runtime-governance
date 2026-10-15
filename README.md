@@ -71,6 +71,24 @@ Hybrid is the strongest: the gateway only forwards a call if a native decision t
 - **Swappable everywhere.** Stores, registries, and sinks are abstract contracts with shared test suites. The core has no web, framework, or cloud dependencies.
 - **Proven, not promised.** A 26-scenario conformance suite and a generated requirement-to-test matrix show exactly which condition is satisfied where (`docs/conformance.md`).
 
+## Try it yourself
+
+An interactive page lets you play the agent: pick a payment, watch it move through the pipeline, then act as the reviewer or the payment rail and see what the controls say.
+
+**Open [`docs/demo/index.html`](docs/demo/index.html)** locally (it is a single self-contained file, no server or install), or serve it with GitHub Pages.
+
+```bash
+open docs/demo/index.html      # macOS; use xdg-open on Linux
+```
+
+What you can click through:
+
+- **Pay 500:** passes on its own. Try the rail with an altered amount, then the exact action, then a replay.
+- **Pay 20,000:** held for a human. Try the intern (refused), the senior reviewer (approved), a modify, or let it time out.
+- **Expired mandate, unknown agent, wrong signing key:** each stops at a different stage, and the pipeline strip shows where.
+
+The page replays real runs of the engine over fictional data. It re-implements no decision logic, and a test fails if it drifts from the engine (`uv run python -m scripts.gen_demo_page` regenerates it).
+
 ## See it in action
 
 ```bash
