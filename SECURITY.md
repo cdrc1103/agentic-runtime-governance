@@ -3,7 +3,7 @@
 This is a reference implementation and demo; it is not intended to protect real assets.
 
 If you believe you found a vulnerability in the code, please open a private security advisory
-on the GitHub repository (or contact the maintainer, Cedric Issel, via the address on the
+on the GitHub repository (or contact the maintainer, via the address on the
 GitHub profile) rather than a public issue. Include the version/commit, a description, and a
 reproduction if possible. There is no SLA.
 
