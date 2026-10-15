@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="Agentic Runtime Governance" width="640">
+</p>
+
 # Agentic Runtime Governance
 
 Let AI agents act in finance, and keep every action governed, explainable, and auditable. A readable, fully traceable reference showing how each condition of the SAFR white paper can be met at runtime, in working code you can run in minutes.
@@ -12,6 +16,50 @@ Agents that move money, open accounts, or message customers need more than a sys
 
 This repo shows what that runtime looks like, piece by piece, with every behaviour tied to a requirement and every requirement tied to a test.
 
+## The idea in one picture
+
+Every action an agent wants to take passes through one decision core before it touches a bank rail. The core answers with one of three verdicts, and writes down why.
+
+```mermaid
+flowchart LR
+  AG([AI agent]) -->|wants to act| GOV{{Governance core}}
+  GOV -->|Auto-Execute<br/>signed one-time token| RAIL[(Payment rail<br/>or tool)]
+  GOV -->|Escalate| HUM([Human reviewer])
+  HUM -->|approve, decline or modify| GOV
+  GOV -->|Deny| STOP[Blocked]
+  GOV -.->|every outcome| LOG[(Tamper-evident<br/>audit log)]
+```
+
+The agent never holds the keys to the rail. It holds, at most, a token that is good for exactly one action, once.
+
+## Two ways to plug in
+
+Pick the pattern that fits how much you control the agent. Both use the same core.
+
+```mermaid
+flowchart TB
+  subgraph NATIVE[Native: you own the agent code]
+    A1[Agent] --> AD[Adapter in the agent process]
+    AD -->|envelope| C1{{Core}}
+    C1 -->|token| AD
+    AD --> R1[(Rail)]
+  end
+  subgraph GATEWAY[Gateway: you do not touch the agent]
+    A2[Agent] --> GW[MCP or HTTP egress gateway]
+    GW -->|envelope built from the observed call| C2{{Core}}
+    C2 -->|verdict| GW
+    GW -->|only allowed calls| R2[(Rail)]
+  end
+```
+
+| | Sees the real call | Sees the reasoning | Needs agent changes |
+|---|---|---|---|
+| Native | Declared by the agent | Rich trace | Yes, a thin adapter |
+| Gateway, standalone | Yes, authentic | Thin | No |
+| Hybrid | Yes, and token must match it | Rich trace | Adapter plus gateway |
+
+Hybrid is the strongest: the gateway only forwards a call if a native decision token matches it exactly, so bypassing the adapter does not work.
+
 ## What you get
 
 - **Every action gets a verdict.** A deterministic disposition engine returns Auto-Execute, Escalate, or Deny. Probabilistic signals such as confidence and anomaly scores feed in from outside, so decisions stay reproducible.
@@ -22,6 +70,61 @@ This repo shows what that runtime looks like, piece by piece, with every behavio
 - **Drop-in governance, no agent rewrite.** Wire it in natively through the docking point, or put an MCP or HTTP-egress gateway in front of existing agents, standalone or hybrid.
 - **Swappable everywhere.** Stores, registries, and sinks are abstract contracts with shared test suites. The core has no web, framework, or cloud dependencies.
 - **Proven, not promised.** A 26-scenario conformance suite and a generated requirement-to-test matrix show exactly which condition is satisfied where (`docs/conformance.md`).
+
+## How a decision is made
+
+Seven stages, in order. A failure anywhere ends in Deny and still lands in the audit log.
+
+```mermaid
+flowchart TD
+  A[Envelope arrives] --> B{Seen before?}
+  B -->|yes| R[Return the original decision]
+  B -->|no| V[1 Validate shape]
+  V --> I[2 Identity: who is this agent]
+  I --> M[3 Mandate: what may it do]
+  M --> C[4 Fetch controls and counters]
+  C --> E[5 Evaluate: limits, confidence, rate, risk]
+  E --> X{6 Verdict}
+  X -->|Auto-Execute or Observe| T[Reserve counters, issue token]
+  X -->|Escalate| Q[Open escalation for a human]
+  X -->|Deny| D
+  T --> D[7 Append to audit chain]
+  Q --> D
+  V -.->|reject| D
+  I -.->|reject| D
+  M -.->|reject| D
+```
+
+## What happens to an escalation
+
+Escalations never hold a connection open. The agent gets a ticket, a reviewer decides, and the agent comes back with the result.
+
+```mermaid
+sequenceDiagram
+  participant Agent
+  participant Core as Governance core
+  participant Rev as Reviewer
+  participant Rail as Payment rail
+  Agent->>Core: pay 20,000
+  Core-->>Agent: ESCALATE, ticket esc-pay-006
+  Core->>Rev: needs a decision
+  Rev->>Core: approve, within my authority limit
+  Core-->>Agent: signed one-time token
+  Agent->>Rail: pay 20,000 plus token
+  Rail->>Core: redeem token
+  Core-->>Rail: ok, token now spent
+  Rail-->>Agent: done
+```
+
+```mermaid
+stateDiagram-v2
+  [*] --> PENDING: Escalate
+  PENDING --> APPROVED: reviewer approves
+  PENDING --> DECLINED: reviewer declines
+  PENDING --> MODIFIED: reviewer modifies, re-enters pipeline
+  PENDING --> PENDING: timeout, reassign to senior once
+  PENDING --> TIMED_OUT: timeout, blocked
+```
 
 ## See it in action
 
