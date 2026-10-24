@@ -1,5 +1,5 @@
 # False positives: Python identifiers / paths named "private_key", not secrets.
-14163c2001f7d7c2d5c4e16e0ed2854f1f1ad58a:demo/example_bank.py:generic-api-key:46
-14163c2001f7d7c2d5c4e16e0ed2854f1f1ad58a:demo/example_bank.py:generic-api-key:47
-14163c2001f7d7c2d5c4e16e0ed2854f1f1ad58a:demo/example_bank.py:generic-api-key:199
-d50a861b59dfdcef0749f7c469b3279aa55ee5d1:src/arg/core/tokens/service.py:generic-api-key:42
+4b9b7457b1d04ff7977ee4126333aa3b16e35e72:demo/example_bank.py:generic-api-key:46
+4b9b7457b1d04ff7977ee4126333aa3b16e35e72:demo/example_bank.py:generic-api-key:47
+4b9b7457b1d04ff7977ee4126333aa3b16e35e72:demo/example_bank.py:generic-api-key:199
+a8ece6486095cb05d7b6a06c05c1b547c42b4523:src/arg/core/tokens/service.py:generic-api-key:42
