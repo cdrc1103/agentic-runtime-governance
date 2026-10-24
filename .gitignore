@@ -56,3 +56,6 @@ Thumbs.db
 
 # Data
 *.reference
+
+# Local agent instructions
+CLAUDE.md
