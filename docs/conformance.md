@@ -50,7 +50,7 @@
 | INT-04 | DESIGN | **Decision-token binding (hybrid mode):** Auto-Execute/Observe returns a short-lived, one-time, signed token b | `StateStore`, `TokenService`, `TokenRedeemer` | 19 |
 | INT-05 | DESIGN | Fail closed on any decision-path failure. | `GovernanceClient` | 11 |
 | INT-06 | DESIGN | Native adapters for LangGraph/LangChain, Claude Agent SDK, OpenAI Agents SDK, plus a generic wrapper | - | 2 |
-| DOC-01 | DESIGN | The interactive demo page (`docs/demo/index.html`) replays recorded runs of the real engine over fictional dat | - | none |
+| DOC-01 | DESIGN | The interactive demo page (`docs/demo/index.html`) replays recorded runs of the real engine over fictional dat | - | 2 |
 
 [PAPER] requirements with at least one test: 32/32.
 

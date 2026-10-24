@@ -106,6 +106,9 @@ CTL-07:
 - tests/conformance/test_scenarios.py::test_S14_unapproved_control_refused_in_production
 - tests/core/test_controls.py::test_manifest_hash_changes_with_any_file_and_is_stable
 - tests/core/test_controls.py::test_production_mode_refuses_unapproved_controls
+DOC-01:
+- tests/test_demo_page.py::test_demo_page_data_matches_engine
+- tests/test_demo_page.py::test_demo_page_has_no_network_dependencies
 DSP-01:
 - tests/core/test_controls.py::test_dispatch_by_logic_type_and_fail_closed
 - tests/core/test_engine.py::test_authorisation_conditions
