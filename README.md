@@ -75,9 +75,7 @@ Hybrid is the strongest: the gateway only forwards a call if a native decision t
 
 An interactive page lets you play the agent: pick a payment, watch it move through the pipeline, then act as the reviewer or the payment rail and see what the controls say.
 
-**Open [`docs/demo/index.html`](docs/demo/index.html)** locally (it is a single self-contained file, no server or install).
-
-Once GitHub Pages is enabled for this repo (source: `main`, folder `/docs`), the same page is served at `https://cdrc1103.github.io/agentic-runtime-governance/demo/`.
+**[Open the live demo](https://cdrc1103.github.io/agentic-runtime-governance/demo/)**, or open [`docs/demo/index.html`](docs/demo/index.html) locally (it is a single self-contained file, no server or install).
 
 ```bash
 open docs/demo/index.html      # macOS; use xdg-open on Linux
