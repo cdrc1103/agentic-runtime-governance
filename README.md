@@ -1,13 +1,9 @@
-<p align="center">
-  <img src="docs/assets/logo.svg" alt="Agentic Runtime Governance" width="640">
-</p>
+<h1 align="center">Agentic Runtime Governance for Financial Services</h1>
 
-<h1 align="center">Agentic Runtime Governance</h1>
-
-<h3 align="center">Let AI agents act in finance — and keep every action governed, explainable, and auditable.</h3>
+<h3 align="center">Keep every agent's action governed, explainable, and auditable.</h3>
 
 <p align="center">
-  <b>A readable, fully traceable reference showing how each SAFR condition can be met at runtime.</b>
+  <b>A readable, fully traceable reference showing how SAFR conditions can be met at runtime.</b>
   Working code you can run in minutes · open source · deterministic core · fail closed · tamper-evident audit
 </p>
 
