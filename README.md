@@ -3,7 +3,7 @@
 <h3 align="center">Keep every agent's action governed, explainable, and auditable.</h3>
 
 <p align="center">
-  <b>A readable, fully traceable reference showing how SAFR conditions can be met at runtime.</b>
+  <b>A readable, fully traceable reference showing how SAFR conditions can be met at runtime.</b></br>
   Working code you can run in minutes · open source · deterministic core · fail closed · tamper-evident audit
 </p>
 
@@ -36,9 +36,7 @@
 
 ---
 
-Based on *Safeguards for Agentic Finance at Runtime* (SAFR), v1.0, July 2026 (MAS / BuildFin.ai with industry contributors). This project implements the SAFR reference model.
-
-> **Disclaimer.** Independent project. Not affiliated with or endorsed by MAS, BuildFin.ai, or any contributor. SAFR is not regulatory guidance, and nothing here is supervisory expectation. Demo only, not production-grade. All data is fictional ("Example Bank"). The paper is © MAS; this repo paraphrases it and cites by section name, with no copied text or figures.
+> **Disclaimer.** Personal view. Independent, unofficial project based on the SAFR white paper (MAS / BuildFin.ai, 3 Jul 2026). Not affiliated with or endorsed by MAS, BuildFin.ai, or any contributor. SAFR is not regulatory guidance, and nothing here is supervisory expectation. Demo only, not production-grade. All data is fictional ("Example Bank"). The paper is © MAS; this repo paraphrases it and cites by section name, with no copied text or figures.
 
 ## Why it exists
 
