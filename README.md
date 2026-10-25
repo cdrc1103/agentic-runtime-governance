@@ -18,7 +18,15 @@
 </p>
 
 <p align="center">
-  <a href="#try-it-yourself">Live demo</a> ·
+  <img src="docs/assets/problem.png" alt="An agent tries to run an action on a bank account. What stands between the request and the money?" width="380">
+  <img src="docs/assets/position.png" alt="Governance must run at the point of action: one checkpoint decides Deny, Escalate, Auto-Execute or Observe." width="380">
+</p>
+
+<p align="center">
+  <a href="https://cdrc1103.github.io/agentic-runtime-governance/demo/"><b>▶ Live demo</b></a>
+</p>
+
+<p align="center">
   <a href="#the-idea-in-one-picture">How it works</a> ·
   <a href="#two-ways-to-plug-in">Integrate</a> ·
   <a href="#what-you-get">Features</a> ·
