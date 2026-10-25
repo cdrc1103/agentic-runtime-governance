@@ -2,9 +2,35 @@
   <img src="docs/assets/logo.svg" alt="Agentic Runtime Governance" width="640">
 </p>
 
-# Agentic Runtime Governance
+<h1 align="center">Agentic Runtime Governance</h1>
 
-Let AI agents act in finance, and keep every action governed, explainable, and auditable. A readable, fully traceable reference showing how each condition of the SAFR white paper can be met at runtime, in working code you can run in minutes.
+<h3 align="center">Let AI agents act in finance — and keep every action governed, explainable, and auditable.</h3>
+
+<p align="center">
+  <b>A readable, fully traceable reference showing how each SAFR condition can be met at runtime.</b>
+  Working code you can run in minutes · open source · deterministic core · fail closed · tamper-evident audit
+</p>
+
+<p align="center">
+  <img alt="reference" src="https://img.shields.io/badge/reference-SAFR%20based-6f42c1?style=flat-square">
+  <img alt="python" src="https://img.shields.io/badge/python-3.12%2B-3776ab?logo=python&logoColor=white&style=flat-square">
+  <img alt="gateway" src="https://img.shields.io/badge/gateway-MCP%20%2B%20HTTP-009688?style=flat-square">
+  <img alt="tokens" src="https://img.shields.io/badge/tokens-EdDSA%20one--time-2ea44f?style=flat-square">
+  <img alt="types" src="https://img.shields.io/badge/types-mypy%20strict-1f6feb?style=flat-square">
+  <img alt="code style" src="https://img.shields.io/badge/code%20style-ruff-261230?style=flat-square">
+  <img alt="licence" src="https://img.shields.io/badge/licence-Apache--2.0-blue?style=flat-square">
+</p>
+
+<p align="center">
+  <a href="#try-it-yourself">Live demo</a> ·
+  <a href="#the-idea-in-one-picture">How it works</a> ·
+  <a href="#two-ways-to-plug-in">Integrate</a> ·
+  <a href="#what-you-get">Features</a> ·
+  <a href="#see-it-in-action">See it in action</a> ·
+  <a href="#develop">Develop</a>
+</p>
+
+---
 
 Based on *Safeguards for Agentic Finance at Runtime* (SAFR), v1.0, July 2026 (MAS / BuildFin.ai with industry contributors). This project implements the SAFR reference model.
 
