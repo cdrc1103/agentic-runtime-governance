@@ -41,6 +41,10 @@ main{max-width:920px;margin:-40px auto 0;padding:0 16px 48px;position:relative}
 .node.stop{background:var(--badbg);border-color:var(--bad);color:var(--ink);opacity:1}
 .node.stop i{background:var(--bad);transform:scale(1.1)}
 .node.skip{opacity:.4;border-style:dashed}
+ .steps{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.srow{display:flex;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);animation:pop .3s ease-out}
+.srow.pass{border-left:4px solid var(--ok)}.srow.stop{border-left:4px solid var(--bad);background:var(--badbg)}.srow.skip{border-left:4px dashed var(--idle);opacity:.7}
+.srow b{display:block;font-size:.92rem}.srow span{color:var(--mute);font-size:.9rem}
 .verdict{border-radius:12px;border:1px solid var(--line);border-left:6px solid var(--idle);padding:16px 18px;background:var(--bg);animation:pop .35s ease-out}
 .verdict.o-auto_execute{border-left-color:var(--ok);background:var(--okbg)}
 .verdict.o-escalate{border-left-color:var(--warn);background:var(--warnbg)}
@@ -67,6 +71,7 @@ tr:last-child td{border-bottom:0}
 .act[aria-expanded=true]::after{transform:rotate(90deg)}
 .res{margin:6px 2px 0;padding:10px 14px;border-radius:10px;font-size:.92rem;background:var(--bg);border:1px dashed var(--line)}
 .res b{display:inline-block;padding:1px 9px;border-radius:6px;margin-right:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem}
+.res p{margin:6px 0 0;color:var(--mute)}
 .res b.good{background:var(--okbg);color:var(--ok)}.res b.badr{background:var(--badbg);color:var(--bad)}
 .hide{display:none}
 footer{max-width:920px;margin:0 auto;padding:0 16px 48px;color:var(--mute);font-size:.82rem}
@@ -96,6 +101,7 @@ footer p{border-top:1px solid var(--line);padding-top:16px;margin:0}
 <section class="step">
 <h2><span class="num">2</span>The pipeline decides</h2>
 <div class="pipe" id="pipe"></div>
+<div class="steps" id="steps"></div>
 </section>
 
 <section class="step">
@@ -397,6 +403,39 @@ const EXPLAIN={
  ESC_AUTHORITY_EXCEEDED:"The reviewer's own authority limit is below this amount.",
  ok:"Accepted.",APPROVED:"Approved. A one-time token is issued.",TIMED_OUT:"Unreviewed in time, so the default applies: blocked.",auto_execute:"Re-entered the full pipeline and passed on its own."
 };
+const COMMON={
+ validate:"The request arrives as a signed envelope: who is asking, which action, and for how much. The gateway first checks it is complete and well-formed.",
+ identity:"The gateway looks the agent up in the registry and checks the signature against the key registered for it. This proves the request really comes from that agent and was not changed on the way.",
+ mandate:"The agent's mandate is its written permission slip. The gateway finds it, checks it is still valid, and checks that it covers payments.",
+ audit:"The decision and its reasons are added to the audit log. Each entry is chained to the one before by a hash, so changing the past would be noticed. Every outcome is logged, including refusals."
+};
+const STORY={
+ within:{engine:"Five controls look at the payment: is this agent allowed to pay, is the model confident enough (0.95), is 500 under the 10,000 per-payment limit, is the running total (500 of 25,000) fine, and is the agent not acting too often. None objects.",
+  verdict:"No control objects, so no human is needed. The system issues a one-time token that is tied to exactly this payment."},
+ over:{engine:"Every control passes except one: 20,000 is above the 10,000 per-payment limit. One objection is enough to stop automatic execution.",
+  verdict:"Going over a limit is not forbidden, it just needs a person. So the payment is held (Escalate) until a human reviewer decides. No token is issued yet."},
+ doubt:{engine:"The amount is tiny and within every limit. But the agent reports 0.4 confidence and the policy wants at least 0.8. A model that is unsure should not move money alone.",
+  verdict:"Because of the doubt, the payment is held (Escalate) for a human to look at, even though the amount is small."},
+ expired:{mandate:"The mandate's end date has passed. An agent without valid authority cannot act, however small the amount.",
+  engine:"Not reached. There is no point checking limits for an agent that has no authority.",
+  verdict:"Denied. The system fails closed: if authority cannot be shown, nothing runs."},
+ ghost:{identity:"No agent with this ID is in the registry. Unknown means no authority, so the check fails right here.",
+  mandate:"Not reached. Without a known agent there is no mandate to look up.",engine:"Not reached. The request was stopped earlier.",
+  verdict:"Denied. The system fails closed: an unknown caller gets nothing."},
+ forged:{identity:"The agent exists, but the signature does not match the key registered for it. Someone else may be pretending to be this agent, or the message was altered.",
+  mandate:"Not reached. The sender was not proven, so its mandate is not even looked at.",engine:"Not reached. The request was stopped earlier.",
+  verdict:"Denied. The system fails closed: a message it cannot trust is refused."}
+};
+const RULEQ={"auth-treasury-payments":"Is this agent allowed to make payments?","evidence-confidence-min":"Is the agent confident enough?","exposure-payment-aggregate":"Does the running total stay under its cap?","exposure-payment-per-action":"Is this single payment under the limit?","rate-payments":"Is the agent acting too often?"};
+const WHY={
+ "action mismatch":"The rail checks the token against the payment it is asked to make. The token was issued for 500, so a 50,000 payment does not match and is refused. A token cannot be reused for a different action.",
+ ok:"The payment matches what was approved, so the rail accepts it. The token is now used up.",
+ replay:"The token was already used. One-time means one time, so a copied or stolen token is useless.",
+ authority:"Reviewers have limits too. The intern may approve up to 100 and this payment is 20,000, so the approval is refused. People are governed by the same rules as agents.",
+ approved:"A senior reviewer with enough authority approves and leaves a note. Now a one-time token is issued, as in the first example.",
+ modified:"Instead of approving, the reviewer lowers the amount to 400. The changed payment goes through the whole pipeline again and passes on its own. A human cannot skip the controls.",
+ timeout:"Nobody answered in time. An unanswered request is never treated as a yes, so the payment is blocked."
+};
 const OUT={auto_execute:"Auto-Execute",escalate:"Escalate",deny:"Deny"};
 const $=id=>document.getElementById(id);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
@@ -417,7 +456,7 @@ function stageStates(s){
   if(stopAt<0)return "pass";
   if(i<stopAt)return "pass";
   if(i===stopAt)return "stop";
-  return i===5?"pass":"skip";
+  return i>=4?"pass":"skip";
  });
 }
 function play(s){
@@ -426,8 +465,14 @@ function play(s){
  const pipe=$("pipe");pipe.replaceChildren();
  const nodes=STAGES.map(([,l],k)=>{const n=el("div","node");n.append(el("i",0,k+1),document.createTextNode(l));pipe.append(n);return n});
  const st=stageStates(s);let i=0;
+ const steps=$("steps");steps.replaceChildren();
  (function step(){
-  if(i<nodes.length){nodes[i].classList.add(st[i]);i++;timer=setTimeout(step,260)}else showVerdict(s);
+  if(i<nodes.length){
+   nodes[i].classList.add(st[i]);
+   const [key,label]=STAGES[i];
+   const txt=(STORY[s.id]||{})[key]||COMMON[key]||"";
+   const r=el("div","srow "+st[i]);const d=el("div");d.append(el("b",0,(i+1)+". "+label),el("span",0,txt));r.append(d);steps.append(r);
+   i++;timer=setTimeout(step,420)}else showVerdict(s);
  })();
 }
 function showVerdict(s){
@@ -443,9 +488,9 @@ function showVerdict(s){
   v.append(ul);
  }else v.append(el("p",0,"No control objected. The action may proceed with a one-time token."));
  if(s.rules.length){
-  const t=el("table");const hr=el("tr");["Control","Result","Inputs"].forEach(h=>hr.append(el("th",0,h)));t.append(hr);
+  const t=el("table");const hr=el("tr");["Control","Question","Result","Inputs"].forEach(h=>hr.append(el("th",0,h)));t.append(hr);
   s.rules.forEach(r=>{const tr=el("tr");
-   tr.append(el("td",0,r.id),el("td",r.result==="fire"?"fire":"passr",r.result));
+   tr.append(el("td",0,r.id),el("td",0,RULEQ[r.id]||""),el("td",r.result==="fire"?"fire":"passr",r.result));
    const c=el("td");c.append(el("code",0,JSON.stringify(r.inputs)));tr.append(c);t.append(tr)});
   const tw=el("div","tw");tw.append(t);v.append(tw);
  }
@@ -456,7 +501,8 @@ function showVerdict(s){
    const w=el("div");const btn=el("button","act",a.label);const res=el("div","res hide");
    const good=a.status===200;
    const bold=el("b",good?"good":"badr",a.status+" "+a.code);
-   res.append(bold,document.createTextNode("  "+(EXPLAIN[a.code]||"")));
+   res.append(bold,document.createTextNode(EXPLAIN[a.code]||""));
+   if(WHY[a.why])res.append(el("p",0,WHY[a.why]));
    btn.setAttribute("aria-expanded","false");
    btn.onclick=()=>{const h=res.classList.toggle("hide");btn.setAttribute("aria-expanded",String(!h))};
    w.append(btn,res);nx.append(w);
