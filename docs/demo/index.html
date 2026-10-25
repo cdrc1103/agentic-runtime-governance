@@ -4,64 +4,116 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agentic Runtime Governance: interactive demo</title>
+<meta name="description" content="Interactive replay of real governance decisions over fictional data. Based on the SAFR reference model; not regulatory guidance.">
 <style>
-:root{--bg:#f8fafc;--panel:#fff;--ink:#0f172a;--mute:#64748b;--line:#e2e8f0;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--idle:#cbd5e1;--accent:#0d9488}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1b2d;--panel:#16263c;--ink:#f1f5f9;--mute:#94a3b8;--line:#25374f;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--idle:#3b4f6b;--accent:#2dd4bf}}
+:root{--bg:#f4f7fb;--panel:#fff;--ink:#0f172a;--mute:#5b6b82;--line:#dfe6ef;--ok:#16a34a;--okbg:#e8f7ee;--warn:#d97706;--warnbg:#fff4e0;--bad:#dc2626;--badbg:#fdecec;--idle:#cbd5e1;--accent:#0d9488;--accent2:#6f42c1;--shadow:0 1px 2px rgba(15,23,42,.05),0 8px 24px rgba(15,23,42,.06);--hero1:#0f2a3d;--hero2:#134e4a}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1524;--panel:#14243a;--ink:#f1f5f9;--mute:#9db0c8;--line:#233650;--ok:#4ade80;--okbg:#10301f;--warn:#fbbf24;--warnbg:#33260c;--bad:#f87171;--badbg:#3a1717;--idle:#34475f;--accent:#2dd4bf;--accent2:#a78bfa;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);--hero1:#0a1a2b;--hero2:#0f3d3a}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,"Segoe UI",Helvetica,Arial,sans-serif}
-main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:1.6rem;margin:0 0 4px}
-h2{font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:32px 0 10px}
-p.lead{color:var(--mute);margin:0 0 8px}
-.note{font-size:.85rem;color:var(--mute);border-left:3px solid var(--line);padding-left:10px;margin-top:12px}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,"Segoe UI",system-ui,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer}
-.card{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
-.card:hover,.card[aria-pressed=true]{border-color:var(--accent)}
-.card[aria-pressed=true]{box-shadow:0 0 0 2px var(--accent)}
-.card b{display:block}.card span{color:var(--mute);font-size:.9rem}
-.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.node{flex:1 1 110px;text-align:center;padding:10px 6px;border-radius:8px;background:var(--idle);color:var(--ink);font-size:.9rem;transition:background .3s,opacity .3s;opacity:.55}
-.node.pass{background:var(--ok);color:#06220f;opacity:1}
-.node.stop{background:var(--bad);color:#fff;opacity:1}
-.node.skip{opacity:.35}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.badge{display:inline-block;padding:2px 12px;border-radius:999px;font-weight:700;color:#fff}
+code{font:.85em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.hero{background:radial-gradient(900px 400px at 85% -10%,rgba(111,66,193,.35),transparent 60%),linear-gradient(135deg,var(--hero1),var(--hero2));color:#f1f5f9;padding:40px 16px 72px}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+.hero .wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:0}
+.hero img{width:112px;height:112px;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(0,0,0,.35))}
+.eyebrow{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5eead4;background:rgba(94,234,212,.12);border:1px solid rgba(94,234,212,.3);padding:3px 10px;border-radius:999px}
+h1{font-size:clamp(1.7rem,4.5vw,2.5rem);line-height:1.15;margin:10px 0 8px;letter-spacing:-.02em}
+.hero p{margin:0;max-width:560px;color:#cbd5e1;font-size:1.05rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{font-size:.8rem;padding:4px 11px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18)}
+main{max-width:920px;margin:-40px auto 0;padding:0 16px 48px;position:relative}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px 22px 24px;margin-bottom:18px}
+.step h2{display:flex;align-items:center;gap:10px;font-size:1.05rem;margin:0 0 14px}
+.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:.8rem;font-weight:700}
+.hint{color:var(--mute);font-size:.9rem;margin:-6px 0 14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{display:flex;gap:12px;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;transition:transform .15s,box-shadow .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
+.card:focus-visible,.act:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card[aria-pressed=true]{border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 2px var(--accent),var(--shadow)}
+.ico{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--line);font-size:1.15rem}
+.card b{display:block;line-height:1.3}.card span.t{color:var(--mute);font-size:.88rem;display:block;margin-top:2px}
+.pipe{display:flex;flex-wrap:wrap;gap:10px}
+.node{flex:1 1 120px;position:relative;text-align:center;padding:14px 8px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);color:var(--mute);font-size:.9rem;font-weight:600;transition:all .35s;opacity:.7}
+.node i{display:grid;place-items:center;width:26px;height:26px;margin:0 auto 6px;border-radius:50%;background:var(--idle);color:#fff;font-style:normal;font-size:.8rem;transition:background .35s,transform .35s}
+.node.pass{background:var(--okbg);border-color:var(--ok);color:var(--ink);opacity:1}
+.node.pass i{background:var(--ok);transform:scale(1.1)}
+.node.stop{background:var(--badbg);border-color:var(--bad);color:var(--ink);opacity:1}
+.node.stop i{background:var(--bad);transform:scale(1.1)}
+.node.skip{opacity:.4;border-style:dashed}
+.verdict{border-radius:12px;border:1px solid var(--line);border-left:6px solid var(--idle);padding:16px 18px;background:var(--bg);animation:pop .35s ease-out}
+.verdict.o-auto_execute{border-left-color:var(--ok);background:var(--okbg)}
+.verdict.o-escalate{border-left-color:var(--warn);background:var(--warnbg)}
+.verdict.o-deny{border-left-color:var(--bad);background:var(--badbg)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.vhead{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.badge{display:inline-block;padding:4px 16px;border-radius:999px;font-weight:800;font-size:1.05rem;color:#fff}
 .b-auto_execute{background:var(--ok);color:#06220f}.b-escalate{background:var(--warn);color:#2a1700}.b-deny{background:var(--bad)}
-table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
-td,th{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
-code{font:.85em ui-monospace,Menlo,Consolas,monospace}
-.fire{color:var(--bad);font-weight:700}.passr{color:var(--ok)}
-.actions{display:flex;flex-direction:column;gap:8px}
-.act{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
-.act:hover{border-color:var(--accent)}
-.res{margin-top:6px;font-size:.9rem;color:var(--mute)}
-.res b.good{color:var(--ok)}.res b.badr{color:var(--bad)}
+.meta{color:var(--mute);font-size:.9rem}
+.verdict ul{margin:12px 0 0;padding-left:20px}.verdict li{margin:4px 0}
+.verdict li code{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.tw{overflow-x:auto;margin-top:14px;border-radius:10px;border:1px solid var(--line);background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+td,th{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.fire{color:var(--bad);font-weight:700}.passr{color:var(--ok);font-weight:600}
+.audit{margin:14px 0 0;color:var(--mute);font-size:.88rem}
+.actions{display:flex;flex-direction:column;gap:10px}
+.act{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;transition:border-color .15s,background .15s}
+.act:hover{border-color:var(--accent);background:var(--panel)}
+.act::after{content:"\25B8";color:var(--accent);transition:transform .2s}
+.act[aria-expanded=true]::after{transform:rotate(90deg)}
+.res{margin:6px 2px 0;padding:10px 14px;border-radius:10px;font-size:.92rem;background:var(--bg);border:1px dashed var(--line)}
+.res b{display:inline-block;padding:1px 9px;border-radius:6px;margin-right:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem}
+.res b.good{background:var(--okbg);color:var(--ok)}.res b.badr{background:var(--badbg);color:var(--bad)}
 .hide{display:none}
+footer{max-width:920px;margin:0 auto;padding:0 16px 48px;color:var(--mute);font-size:.82rem}
+footer p{border-top:1px solid var(--line);padding-top:16px;margin:0}
+@media (max-width:560px){.hero{padding-bottom:64px}.step{padding:18px 16px}}
 </style>
 </head>
 <body>
-<main>
+<header class="hero">
+<div class="wrap">
+<img src="../assets/logo.png" alt="">
+<div>
+<span class="eyebrow">Interactive demo</span>
 <h1>Agentic Runtime Governance</h1>
-<p class="lead">Pick what an AI agent tries to do. Watch the governance pipeline decide, then act on the result.</p>
-<p class="note">Interactive replay of real runs of the reference engine over fictional data ("Example Bank"). This page re-implements no decision logic. Based on the SAFR reference model; SAFR is not regulatory guidance. Demo only.</p>
-
-<h2>1. What does the agent try?</h2>
+<p>Pick what an AI agent tries to do. Watch the governance pipeline decide, then act on the result.</p>
+<div class="chips"><span class="chip">Deterministic core</span><span class="chip">Fail closed</span><span class="chip">One-time tokens</span><span class="chip">Hash-chained audit</span></div>
+</div>
+</div>
+</header>
+<main>
+<section class="step">
+<h2><span class="num">1</span>What does the agent try?</h2>
 <div class="cards" id="cards"></div>
+</section>
 
 <div id="run" class="hide">
-<h2>2. The pipeline decides</h2>
+<section class="step">
+<h2><span class="num">2</span>The pipeline decides</h2>
 <div class="pipe" id="pipe"></div>
+</section>
 
-<h2>3. Verdict</h2>
-<div class="panel" id="verdict"></div>
+<section class="step">
+<h2><span class="num">3</span>Verdict</h2>
+<div id="verdict"></div>
+</section>
 
-<div id="nextbox" class="hide">
-<h2>4. What happens next? Click to see.</h2>
+<section class="step hide" id="nextbox">
+<h2><span class="num">4</span>What happens next?</h2>
+<p class="hint">Click an option to see the response.</p>
 <div class="actions" id="next"></div>
-</div>
+</section>
 </div>
 </main>
+<footer>
+<p>Interactive replay of real runs of the reference engine over fictional data ("Example Bank"). This page re-implements no decision logic. Based on the SAFR reference model; SAFR is not regulatory guidance. Demo only, not production-grade.</p>
+</footer>
 <script>
 /*DATA_START*/
 const DATA = {
@@ -346,6 +398,7 @@ const EXPLAIN={
  ESC_AUTHORITY_EXCEEDED:"The reviewer's own authority limit is below this amount.",
  ok:"Accepted.",APPROVED:"Approved. A one-time token is issued.",TIMED_OUT:"Unreviewed in time, so the default applies: blocked.",auto_execute:"Re-entered the full pipeline and passed on its own."
 };
+const ICON={within:"\u2705",over:"\u2696\uFE0F",doubt:"\uD83E\uDD14",expired:"\u231B",ghost:"\uD83D\uDC7B",forged:"\uD83D\uDD8A\uFE0F"};
 const OUT={auto_execute:"Auto-Execute",escalate:"Escalate",deny:"Deny"};
 const $=id=>document.getElementById(id);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
@@ -353,7 +406,8 @@ let timer=null;
 function renderCards(){
  DATA.scenarios.forEach((s,i)=>{
   const b=el("button","card");b.setAttribute("aria-pressed","false");
-  b.append(el("b",0,s.title),el("span",0,s.blurb));
+  const tx=el("div");tx.append(el("b",0,s.title),el("span","t",s.blurb));
+  b.append(el("span","ico",ICON[s.id]||"\u25CF"),tx);
   b.onclick=()=>{document.querySelectorAll(".card").forEach(c=>c.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");play(s)};
   $("cards").append(b);
  });
@@ -372,17 +426,18 @@ function play(s){
  clearTimeout(timer);
  $("run").classList.remove("hide");$("nextbox").classList.add("hide");$("verdict").replaceChildren();
  const pipe=$("pipe");pipe.replaceChildren();
- const nodes=STAGES.map(([,l])=>{const n=el("div","node",l);pipe.append(n);return n});
+ const nodes=STAGES.map(([,l],k)=>{const n=el("div","node");n.append(el("i",0,k+1),document.createTextNode(l));pipe.append(n);return n});
  const st=stageStates(s);let i=0;
  (function step(){
   if(i<nodes.length){nodes[i].classList.add(st[i]);i++;timer=setTimeout(step,260)}else showVerdict(s);
  })();
 }
 function showVerdict(s){
- const v=$("verdict");v.replaceChildren();
- const head=el("div");
+ const v0=$("verdict");v0.replaceChildren();
+ const v=el("div","verdict o-"+s.outcome);v0.append(v);
+ const head=el("div","vhead");
  const b=el("span","badge b-"+s.outcome,OUT[s.outcome]||s.outcome);
- head.append(b,el("span",0,"  decided at the "+s.stage+" stage, policy "+s.policy));
+ head.append(b,el("span","meta","decided at the "+s.stage+" stage \u00b7 policy "+s.policy));
  v.append(head);
  if(s.reasons.length){
   const ul=el("ul");
@@ -394,9 +449,9 @@ function showVerdict(s){
   s.rules.forEach(r=>{const tr=el("tr");
    tr.append(el("td",0,r.id),el("td",r.result==="fire"?"fire":"passr",r.result));
    const c=el("td");c.append(el("code",0,JSON.stringify(r.inputs)));tr.append(c);t.append(tr)});
-  v.append(t);
+  const tw=el("div","tw");tw.append(t);v.append(tw);
  }
- v.append(el("p","res","Written to the hash-chained audit log, whatever the outcome."));
+ v.append(el("p","audit","Written to the hash-chained audit log, whatever the outcome."));
  const nx=$("next");nx.replaceChildren();
  if(s.next.length){
   s.next.forEach(a=>{
@@ -404,7 +459,8 @@ function showVerdict(s){
    const good=a.status===200;
    const bold=el("b",good?"good":"badr",a.status+" "+a.code);
    res.append(bold,document.createTextNode("  "+(EXPLAIN[a.code]||"")));
-   btn.onclick=()=>res.classList.toggle("hide");
+   btn.setAttribute("aria-expanded","false");
+   btn.onclick=()=>{const h=res.classList.toggle("hide");btn.setAttribute("aria-expanded",String(!h))};
    w.append(btn,res);nx.append(w);
   });
   $("nextbox").classList.remove("hide");
