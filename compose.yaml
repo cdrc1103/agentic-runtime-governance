@@ -9,7 +9,9 @@ services:
       ARG_TOKEN_KEY: ${ARG_TOKEN_KEY:?set ARG_TOKEN_KEY}
   sweeper:
     image: curlimages/curl:8.11.1
-    depends_on: [service]
+    depends_on:
+      service:
+        condition: service_healthy
     environment:
       ARG_ADMIN_TOKEN: ${ARG_ADMIN_TOKEN:?set ARG_ADMIN_TOKEN (an admin-role token from ARG_TOKENS)}
     entrypoint: ["/bin/sh", "-c"]
