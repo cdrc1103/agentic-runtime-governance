@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/assets/logo.png" alt="Agentic Runtime Governance" width="240">
-</p>
-
 <h1 align="center">Agentic Runtime Governance for Financial Services</h1>
 
 <h3 align="center">Keep every agent's action governed, explainable, and auditable.</h3>
