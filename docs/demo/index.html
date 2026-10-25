@@ -32,7 +32,6 @@ main{max-width:920px;margin:-40px auto 0;padding:0 16px 48px;position:relative}
 .card:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
 .card:focus-visible,.act:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .card[aria-pressed=true]{border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 2px var(--accent),var(--shadow)}
-.ico{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--line);font-size:1.15rem}
 .card b{display:block;line-height:1.3}.card span.t{color:var(--mute);font-size:.88rem;display:block;margin-top:2px}
 .pipe{display:flex;flex-wrap:wrap;gap:10px}
 .node{flex:1 1 120px;position:relative;text-align:center;padding:14px 8px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);color:var(--mute);font-size:.9rem;font-weight:600;transition:all .35s;opacity:.7}
@@ -398,7 +397,6 @@ const EXPLAIN={
  ESC_AUTHORITY_EXCEEDED:"The reviewer's own authority limit is below this amount.",
  ok:"Accepted.",APPROVED:"Approved. A one-time token is issued.",TIMED_OUT:"Unreviewed in time, so the default applies: blocked.",auto_execute:"Re-entered the full pipeline and passed on its own."
 };
-const ICON={within:"\u2705",over:"\u2696\uFE0F",doubt:"\uD83E\uDD14",expired:"\u231B",ghost:"\uD83D\uDC7B",forged:"\uD83D\uDD8A\uFE0F"};
 const OUT={auto_execute:"Auto-Execute",escalate:"Escalate",deny:"Deny"};
 const $=id=>document.getElementById(id);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
@@ -407,7 +405,7 @@ function renderCards(){
  DATA.scenarios.forEach((s,i)=>{
   const b=el("button","card");b.setAttribute("aria-pressed","false");
   const tx=el("div");tx.append(el("b",0,s.title),el("span","t",s.blurb));
-  b.append(el("span","ico",ICON[s.id]||"\u25CF"),tx);
+  b.append(tx);
   b.onclick=()=>{document.querySelectorAll(".card").forEach(c=>c.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");play(s)};
   $("cards").append(b);
  });
