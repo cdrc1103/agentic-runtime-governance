@@ -107,8 +107,20 @@ CTL-07:
 - tests/core/test_controls.py::test_manifest_hash_changes_with_any_file_and_is_stable
 - tests/core/test_controls.py::test_production_mode_refuses_unapproved_controls
 DOC-01:
-- tests/test_demo_page.py::test_demo_page_data_matches_engine
-- tests/test_demo_page.py::test_demo_page_has_no_network_dependencies
+- tests/test_demo_page.py::test_overview_page_data_matches_engine
+- tests/test_demo_page.py::test_pages_have_no_network_dependencies
+DOC-02:
+- tests/test_demo_page.py::test_hub_links_every_web_demo
+- tests/test_demo_page.py::test_pages_have_no_network_dependencies
+DOC-03:
+- tests/test_demo_page.py::test_internal_agents_cover_finance_domains_and_all_dispositions
+DOC-04:
+- tests/test_demo_page.py::test_internal_agents_page_steps_manually
+DOC-05:
+- tests/test_demo_page.py::test_every_step_names_its_technology_and_live_component
+DOC-06:
+- tests/test_demo_page.py::test_internal_agents_decisions_match_engine
+- tests/test_demo_page.py::test_overview_page_data_matches_engine
 DSP-01:
 - tests/core/test_controls.py::test_dispatch_by_logic_type_and_fail_closed
 - tests/core/test_engine.py::test_authorisation_conditions
