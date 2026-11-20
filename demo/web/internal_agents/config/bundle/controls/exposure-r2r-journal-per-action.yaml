@@ -1,0 +1,11 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: exposure-r2r-journal-per-action
+version: 1
+source: policy
+category: exposure
+applies_to: {action_types: [journal.post, journal.adjust]}
+logic: {type: exposure, scope: per_action, amount_parameter: amount, limit: 250000}
+effect: escalate
+escalation: {queue: controller-review, timeout_seconds: 900, reviewer_role: finance-controller, on_timeout: block}
+owner: financial-control
+review_status: approved

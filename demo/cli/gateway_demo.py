@@ -4,7 +4,7 @@ A toy upstream "MCP server" sits behind the gateway. Standalone mode decides on 
 call; hybrid mode demands a one-time decision token from the agent's native decision.
 Everything runs in-process (ASGI), no network. Not regulatory guidance; demo only.
 
-Run: ``uv run python -m demo.gateway_demo``
+Run: ``uv run python -m demo.cli.gateway_demo``
 """
 
 import json
@@ -25,7 +25,7 @@ from arg.gateway.backend import EmbeddedRedeemer
 from arg.gateway.core import GatewayEngine
 from arg.gateway.identity import StaticBearerIdentityResolver
 from arg.gateway.mcp import McpGateway
-from demo.example_bank import ExampleBank, build_example_bank, payment_envelope
+from demo.common.example_bank import ExampleBank, build_example_bank, payment_envelope
 
 CREDENTIALS = {
     "agent-credential": {

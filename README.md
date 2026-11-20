@@ -103,28 +103,33 @@ Hybrid is the strongest: the gateway only forwards a call if a native decision t
 
 An interactive page lets you play the agent: pick a payment, watch it move through the pipeline, then act as the reviewer or the payment rail and see what the controls say.
 
-**[Open the live demo](https://cdrc1103.github.io/agentic-runtime-governance/demo/)**, or open [`docs/demo/index.html`](docs/demo/index.html) locally (it is a single self-contained file, no server or install).
+**[Open the live demos](https://cdrc1103.github.io/agentic-runtime-governance/demo/)**, or open [`docs/demo/index.html`](docs/demo/index.html) locally (each page is a single self-contained file, no server or install).
 
 ```bash
 open docs/demo/index.html      # macOS; use xdg-open on Linux
 ```
 
-What you can click through:
+Two demos, linked from the hub:
+
+- **Overview** (`docs/demo/overview/`): play the agent, pick a payment, and watch the pipeline decide.
+- **Agentic Control Plane based on MAS SAFR Reference** (`docs/demo/internal-agents/`): finance and operations agents (procure-to-pay, order-to-cash, record-to-report) stepped through a picture at a time (back and forward controls, four core scenarios plus more behind a dropdown). Each step carries one example enterprise tool; a toggle shows the reference implementation and the real artifacts: envelope, control file, rule inputs, audit entry, token claims.
+
+What you can click through in the overview:
 
 - **Pay 500:** passes on its own. Try the rail with an altered amount, then the exact action, then a replay.
 - **Pay 20,000:** held for a human. Try the intern (refused), the senior reviewer (approved), a modify, or let it time out.
 - **Expired mandate, unknown agent, wrong signing key:** each stops at a different stage, and the pipeline strip shows where.
 
-The page replays real runs of the engine over fictional data. It re-implements no decision logic, and a test fails if it drifts from the engine (`uv run python -m scripts.gen_demo_page` regenerates it).
+The page replays real runs of the engine over fictional data. It re-implements no decision logic, and a test fails if it drifts from the engine (`uv run python -m scripts.gen_demos` regenerates both pages).
 
 ## See it in action
 
 ```bash
 uv sync --all-extras
 
-uv run python demo/engine_demo.py   # the engine over sample envelopes, step by step
-uv run python -m demo.e2e_demo      # full HTTP lifecycle: decisions, tokens, escalation, audit
-uv run python -m demo.gateway_demo  # MCP gateway, standalone and hybrid, no agent code changes
+uv run python demo/cli/engine_demo.py   # the engine over sample envelopes, step by step
+uv run python -m demo.cli.e2e_demo      # full HTTP lifecycle: decisions, tokens, escalation, audit
+uv run python -m demo.cli.gateway_demo  # MCP gateway, standalone and hybrid, no agent code changes
 ```
 
 Outputs below are real runs, trimmed for length. Everything is fictional ("Example Bank").

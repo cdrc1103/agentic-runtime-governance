@@ -1,7 +1,7 @@
 """Checkpoint P4 demo: sample envelopes through identity, mandate, controls, and the engine.
 
 Fictional Example Bank data; keys are generated at run time. Not regulatory guidance.
-Run: ``uv run python demo/engine_demo.py``.
+Run: ``uv run python demo/cli/engine_demo.py``.
 """
 
 import tempfile
@@ -31,7 +31,7 @@ from arg.core.models import (
 from arg.runtime import build_runtime
 
 AT = datetime(2026, 1, 5, 9, 0, tzinfo=UTC)
-BUNDLE = Path(__file__).parent.parent / "config" / "bundle"
+BUNDLE = Path(__file__).resolve().parents[2] / "config" / "bundle"
 
 
 def mandate(mid: str, agent: str, **kw: Any) -> Mandate:

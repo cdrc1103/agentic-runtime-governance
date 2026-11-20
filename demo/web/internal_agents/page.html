@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Control Plane based on MAS SAFR Reference</title>
+<meta name="description" content="Step-by-step replay of real governance decisions for internal finance and operations agents, over fictional data. Based on the SAFR reference model; not regulatory guidance.">
+<style>
+/*STYLE*/
+</style>
+</head>
+<body>
+<header class="top">
+<div class="wrap bar">
+<div>
+<h1>Agentic Control Plane based on MAS SAFR Reference</h1>
+<p class="sub">Real decisions from the reference runtime, one step at a time. Fictional bank and agents.</p>
+</div>
+<label class="switch"><input type="checkbox" id="refmode"> Show reference implementation</label>
+</div>
+</header>
+<main class="wrap">
+<section id="picker" aria-label="Scenarios">
+<div class="grid" id="grid"></div>
+<label class="more">More scenarios <select id="more"></select></label>
+</section>
+<section id="stage" class="hide">
+<div class="scn-bar"><button id="change" class="ghost">&larr; Scenarios</button><span id="scn-title"></span><span id="act" class="actchip hide"></span></div>
+<div class="caption">
+<div><h2 id="head"></h2><p id="sub"></p></div>
+<div class="tool"><span>Example tool</span><b id="tool"></b></div>
+</div>
+<div class="diagram" id="diagram">
+<div class="card agent" id="agent"><div class="lbl">Proposed action</div><b>AI agent</b><div class="who" id="agent-name"></div><div class="ask" id="agent-ask"></div></div>
+<div class="plane" id="plane">
+<div class="plane-h">Control plane: decide before execution</div>
+<div class="pbox" id="b1"><div class="num">1</div><div class="pbody"><div class="pt">Verify agent identity and mandate</div><ul class="rows"></ul></div></div>
+<div class="pbox" id="b2"><div class="num">2</div><div class="pbody"><div class="pt">Evaluate mandates, limits and controls</div><ul class="rows"></ul></div></div>
+<div class="pbox" id="b3"><div class="num">3</div><div class="pbody"><div class="pt">Decide and create evidence</div><ul class="rows"></ul></div></div>
+</div>
+<div class="side">
+<div class="card sys" id="system"><div class="lbl">Controlled execution</div><b>Bank systems</b><div class="stext" id="system-text"></div></div>
+<div class="card rev" id="review"><div class="lbl">Human reviewer</div><div class="stext" id="review-text">Only if needed</div></div>
+</div>
+<div class="packet" id="packet"></div>
+</div>
+<div class="disp" id="disp"></div>
+<section id="ref" class="ref hide" aria-label="Reference implementation"></section>
+</section>
+</main>
+<nav class="ctl hide" id="ctl" aria-label="Step controls">
+<div class="wrap ctlrow">
+<button id="prev" class="nav">&#9664; Back</button>
+<div class="mid"><div class="dots" id="dots"></div><div class="count" id="count"></div></div>
+<button id="next" class="nav primary">Next &#9654;</button>
+<div class="auto"><label><input type="checkbox" id="auto"> Autoplay</label>
+<select id="speed" aria-label="Autoplay speed"><option value="12000">slow</option><option value="8000" selected>medium</option><option value="5000">faster</option></select></div>
+</div>
+</nav>
+<footer class="wrap foot">
+<p>Replay of real runs of the reference engine over fictional data. This page re-implements no decision logic. Based on the SAFR reference model; SAFR is not regulatory guidance. Demo only, not production-grade. Example tools are illustrations of what could implement a step, not a statement about any institution's systems.</p>
+<p class="keys">Keys: <kbd>&rarr;</kbd> next, <kbd>&larr;</kbd> back, <kbd>Home</kbd> restart, <kbd>R</kbd> reference implementation, <kbd>Esc</kbd> scenarios.</p>
+</footer>
+<script>
+/*DATA_START*/
+const DATA = {};
+/*DATA_END*/
+/*SCRIPT*/
+</script>
+</body>
+</html>

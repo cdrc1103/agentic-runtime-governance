@@ -1,0 +1,11 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: rate-o2c-billing
+version: 1
+source: policy
+category: rate
+applies_to: {action_types: [fee_invoice.issue]}
+logic: {type: rate, max_actions: 100, window_seconds: 3600, key_by: agent}
+effect: escalate
+escalation: {queue: ar-review, timeout_seconds: 900, reviewer_role: ar-reviewer, on_timeout: block}
+owner: accounts-receivable
+review_status: approved

@@ -27,7 +27,7 @@ flowchart LR
 | `arg.service` | Decision API (FastAPI), config, telemetry | Container; serverless-compatible |
 | `arg.adapters.*` | Native hooks: embedded mode (in-process core) or HTTP mode | In the agent process |
 | `arg.gateway.*` | MCP gateway and HTTP egress gateway | Separate stateless process |
-| `demo/` | Example Bank mock rails, scripted agents, scenario runner | Local and CI |
+| `demo/` | `common` (shared fictional wiring), `cli` (terminal walkthroughs), `web/<name>` (recorders for the published pages) | Local and CI |
 
 **Tradeoff to document:** a gateway sees the real call (authentic action, credential-derived identity) but not the reasoning, so the trace is thin. Native sees a rich trace but it is agent-declared. Hybrid mode (INT-04) combines them.
 

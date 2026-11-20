@@ -18,5 +18,6 @@ The paper leaves these open. Each default becomes an ADR and an entry in `spec-g
 | SG-08 | What "completeness and coherence" checks are | Completeness: required fields per action type. Coherence: schema version supported; `context.agent_id` equals the identity claim; trace non-empty where the action type requires it; trace timestamps monotonic; mandate reference resolves; for gateway origin, action-parameter hash equals the observed-call hash |
 | SG-09 | Behaviour when SAFR is unavailable | INT-05 |
 | SG-10 | Delegation chain representation | Mandate carries `delegation_chain[]` and `depth`; authorisation control enforces a configured max depth |
+| SG-11 | How attribute-level data restrictions (a closed accounting period, a restricted ledger account) are expressed | `[DESIGN]` The integration classifies the target into a distinct action type (for example `journal.post_closed_period`) and the authorisation control does not permit it. Finer rules need a custom evaluator or the optional Rego evaluator; the built-in evaluators do not read arbitrary parameters |
 
 ---

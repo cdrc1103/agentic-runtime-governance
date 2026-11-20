@@ -1,0 +1,10 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: auth-r2r
+version: 1
+source: policy
+category: authorisation
+applies_to: {agent_classes: [r2r]}
+logic: {type: authorisation, permitted_action_types: [journal.post, journal.adjust], max_delegation_depth: 1}
+effect: deny
+owner: finance-risk
+review_status: approved

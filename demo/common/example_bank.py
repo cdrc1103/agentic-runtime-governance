@@ -17,8 +17,8 @@ from arg.core.models import Mandate, MandateLimits
 from arg.runtime import GovernanceRuntime, build_runtime
 
 T0 = datetime(2026, 1, 5, 9, 0, tzinfo=UTC)
-BUNDLE = Path(__file__).parent.parent / "config" / "bundle"
-REVIEWERS = Path(__file__).parent.parent / "config" / "reviewers.yaml"
+BUNDLE = Path(__file__).resolve().parents[2] / "config" / "bundle"
+REVIEWERS = Path(__file__).resolve().parents[2] / "config" / "reviewers.yaml"
 
 
 class Clock:
