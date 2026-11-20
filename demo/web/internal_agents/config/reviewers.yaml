@@ -1,0 +1,6 @@
+# Fictional human reviewers of the bank (ESC-04). authority_limit null = unlimited.
+reviewers:
+  - {reviewer_id: reviewer-ap-1, roles: [ap-reviewer], authority_limit: 100000}
+  - {reviewer_id: reviewer-ap-junior, roles: [ap-reviewer], authority_limit: 5000}
+  - {reviewer_id: reviewer-ar-1, roles: [ar-reviewer], authority_limit: 20000}
+  - {reviewer_id: controller-1, roles: [finance-controller], authority_limit: 1000000, senior: true}

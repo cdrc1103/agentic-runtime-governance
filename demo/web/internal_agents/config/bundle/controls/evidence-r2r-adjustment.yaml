@@ -1,0 +1,12 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: evidence-r2r-adjustment
+version: 1
+source: policy
+category: evidence
+kind: ai_specific
+applies_to: {action_types: [journal.adjust]}
+logic: {type: evidence, min_confidence: 0.8, signal: confidence, required_evidence: [supporting_document]}
+effect: escalate
+escalation: {queue: controller-review, timeout_seconds: 900, reviewer_role: finance-controller, on_timeout: block}
+owner: financial-control
+review_status: approved

@@ -1,0 +1,12 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: evidence-p2p-three-way-match
+version: 1
+source: policy
+category: evidence
+kind: ai_specific
+applies_to: {action_types: [invoice.approve, supplier_payment.release]}
+logic: {type: evidence, min_confidence: 0.8, signal: confidence, required_evidence: [po_match, goods_receipt_match]}
+effect: escalate
+escalation: {queue: ap-review, timeout_seconds: 900, reviewer_role: ap-reviewer, on_timeout: block}
+owner: accounts-payable
+review_status: approved

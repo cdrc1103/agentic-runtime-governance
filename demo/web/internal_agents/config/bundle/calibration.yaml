@@ -1,0 +1,74 @@
+# Fictional risk calibration of the bank. Score = sum of ordinal ranks (0..2 each) + 1 if novel.
+review_status: approved
+escalation: {queue: controller-review, timeout_seconds: 900, reviewer_role: finance-controller, on_timeout: block}
+action_types:
+  invoice.approve:
+    reversibility: partially_reversible
+    customer_impact: low
+    regulatory_sensitivity: low
+    materiality_parameter: amount
+    materiality_bands: [{upper: 10000, level: low}, {upper: 100000, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  supplier_payment.release:
+    reversibility: partially_reversible
+    customer_impact: low
+    regulatory_sensitivity: medium
+    materiality_parameter: amount
+    materiality_bands: [{upper: 10000, level: low}, {upper: 50000, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  supplier.bank_details.change:
+    reversibility: irreversible
+    customer_impact: medium
+    regulatory_sensitivity: high
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  fee_invoice.issue:
+    reversibility: reversible
+    customer_impact: medium
+    regulatory_sensitivity: low
+    materiality_parameter: amount
+    materiality_bands: [{upper: 10000, level: low}, {upper: 20000, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  receivable.write_off:
+    reversibility: partially_reversible
+    customer_impact: low
+    regulatory_sensitivity: medium
+    materiality_parameter: amount
+    materiality_bands: [{upper: 1000, level: low}, {upper: 2500, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  journal.post:
+    reversibility: partially_reversible
+    customer_impact: low
+    regulatory_sensitivity: high
+    materiality_parameter: amount
+    materiality_bands: [{upper: 50000, level: low}, {upper: 250000, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  journal.adjust:
+    reversibility: partially_reversible
+    customer_impact: low
+    regulatory_sensitivity: high
+    materiality_parameter: amount
+    materiality_bands: [{upper: 10000, level: low}, {upper: 250000, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7
+  journal.post_closed_period:
+    reversibility: irreversible
+    customer_impact: low
+    regulatory_sensitivity: high
+    materiality_parameter: amount
+    materiality_bands: [{upper: 50000, level: low}, {upper: 250000, level: medium}, {upper: null, level: high}]
+    observe_at: 3
+    escalate_at: 5
+    deny_at: 7

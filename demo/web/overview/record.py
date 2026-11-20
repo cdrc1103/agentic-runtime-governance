@@ -1,10 +1,10 @@
-"""Regenerate the data embedded in ``docs/demo/index.html`` from the real engine.
+"""Regenerate the data embedded in ``docs/demo/overview/index.html`` from the real engine.
 
 The page replays recorded runs; it re-implements no decision logic. Each scenario is run on a
 fresh in-process runtime over Example Bank (fictional data), so the page cannot drift from the
 engine without this script showing a diff. Not regulatory guidance; demo only.
 
-Run: ``uv run python -m scripts.gen_demo_page``
+Run: ``uv run python -m scripts.gen_demos``
 """
 
 import json
@@ -21,9 +21,9 @@ from arg.core.models import Action
 from arg.core.tokens.service import action_hash
 from arg.service.app import create_app
 from arg.service.auth import BearerTokenAuthenticator
-from demo.example_bank import ExampleBank, build_example_bank, payment_envelope
+from demo.common.example_bank import ExampleBank, build_example_bank, payment_envelope
 
-PAGE = Path(__file__).resolve().parents[1] / "docs" / "demo" / "index.html"
+PAGE = Path(__file__).resolve().parents[3] / "docs" / "demo" / "overview" / "index.html"
 TOKENS = {
     "orch": {"principal": "orchestrator", "roles": ["submit"]},
     "rail": {"principal": "settlement-rail", "roles": ["consume"]},

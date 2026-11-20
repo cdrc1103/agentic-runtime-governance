@@ -50,7 +50,12 @@
 | INT-04 | DESIGN | **Decision-token binding (hybrid mode):** Auto-Execute/Observe returns a short-lived, one-time, signed token b | `StateStore`, `TokenService`, `TokenRedeemer` | 19 |
 | INT-05 | DESIGN | Fail closed on any decision-path failure. | `GovernanceClient` | 11 |
 | INT-06 | DESIGN | Native adapters for LangGraph/LangChain, Claude Agent SDK, OpenAI Agents SDK, plus a generic wrapper | - | 2 |
-| DOC-01 | DESIGN | The interactive demo page (`docs/demo/index.html`) replays recorded runs of the real engine over fictional dat | - | 2 |
+| DOC-01 | DESIGN | The interactive demo page (`docs/demo/overview/index.html`) replays recorded runs of the real engine over fict | - | 2 |
+| DOC-02 | DESIGN | `demo/` holds several independent demos: `demo/common` (shared fictional wiring), `demo/cli` (terminal walkthr | - | 2 |
+| DOC-03 | DESIGN | The internal-agents demo shows agents operating in a bank's core finance and operations (procure-to-pay, order | - | 1 |
+| DOC-04 | DESIGN | A web demo meant for presenting is stepped manually: back and forward buttons and arrow keys, no autoplay unle | - | 1 |
+| DOC-05 | DESIGN | Each step of the internal-agents demo shows one example enterprise tool as a badge (an illustration, not a sta | - | 1 |
+| DOC-06 | DESIGN | A test fails if the recorded decisions of any web demo (outcome, reason codes, rule results per step) differ f | - | 2 |
 
 [PAPER] requirements with at least one test: 32/32.
 

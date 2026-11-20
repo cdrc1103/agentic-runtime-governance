@@ -4,7 +4,7 @@ Scripted agents submit envelopes; a rail redeems decision tokens; reviewers reso
 escalations; an operator verifies and anchors the audit log. The API runs in-process (ASGI),
 so no network or server is needed. Not regulatory guidance; demo only.
 
-Run: ``uv run python -m demo.e2e_demo``
+Run: ``uv run python -m demo.cli.e2e_demo``
 """
 
 import base64
@@ -21,7 +21,7 @@ from arg.core.models import Action
 from arg.core.tokens.service import action_hash
 from arg.service.app import create_app
 from arg.service.auth import BearerTokenAuthenticator
-from demo.example_bank import build_example_bank, payment_envelope
+from demo.common.example_bank import build_example_bank, payment_envelope
 
 TOKENS = {
     "tok-orchestrator": {"principal": "orchestrator", "roles": ["submit"]},

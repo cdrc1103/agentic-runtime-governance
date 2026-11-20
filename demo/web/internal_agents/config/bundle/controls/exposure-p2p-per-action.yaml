@@ -1,0 +1,11 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: exposure-p2p-per-action
+version: 1
+source: policy
+category: exposure
+applies_to: {action_types: [invoice.approve, supplier_payment.release]}
+logic: {type: exposure, scope: per_action, amount_parameter: amount, limit: 50000, apply_mandate_limit: true}
+effect: escalate
+escalation: {queue: ap-review, timeout_seconds: 900, reviewer_role: ap-reviewer, on_timeout: block}
+owner: accounts-payable
+review_status: approved

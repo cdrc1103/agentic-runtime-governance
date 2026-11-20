@@ -10,7 +10,7 @@ from arg.core import crypto
 from arg.core.decision.service import DecisionService
 from arg.core.models import Action, DecisionResponse
 from arg.runtime import GovernanceRuntime
-from demo.example_bank import BUNDLE, Clock, build_example_bank
+from demo.common.example_bank import BUNDLE, Clock, build_example_bank
 from tests.core.factories import make_envelope
 
 

@@ -1,0 +1,11 @@
+# Fictional control of the bank, internal-agents demo.
+control_id: exposure-o2c-writeoff-daily
+version: 1
+source: policy
+category: exposure
+applies_to: {action_types: [receivable.write_off]}
+logic: {type: exposure, scope: aggregate, amount_parameter: amount, limit: 5000, key_by: agent, window_seconds: 86400}
+effect: escalate
+escalation: {queue: ar-review, timeout_seconds: 900, reviewer_role: ar-reviewer, on_timeout: block}
+owner: accounts-receivable
+review_status: approved
