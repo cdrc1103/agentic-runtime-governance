@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <a href="https://cdrc1103.github.io/agentic-runtime-governance/demo/"><b>▶ Live demo</b></a>
+  <a href="https://cdrc1103.github.io/agentic-runtime-governance/demo/internal-agents/"><b>▶ Live demo</b></a>
 </p>
 
 <p align="center">
